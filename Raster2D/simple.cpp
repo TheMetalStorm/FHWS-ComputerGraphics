@@ -6,10 +6,8 @@
 #include "simple.h"
 #include "render.h"
 #include "ppm.h"
+#include "transformation.h"
 #include <string>
-
-using namespace std;
-using namespace Eigen;
 
 RGBPixel framebuffer[RESOLUTION][RESOLUTION];
 
@@ -143,9 +141,9 @@ int main(int argc, char* argv[])
 
     catmullRom(a, 1,1,1);
 
+    vector<Vector3i> h = toHomogeneousCoordinates(points);
 
-
-	framebufferToPPM(framebuffer, "withoutOutline");
+    framebufferToPPM(framebuffer, "withoutOutline");
 
 /////////////////////////////////
 	glutMainLoop();

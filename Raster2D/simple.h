@@ -11,6 +11,7 @@
 #include <Eigen/Dense>
 
 using namespace std;
+using namespace Eigen;
 
 struct RGBPixel {
 	GLfloat R, G, B;

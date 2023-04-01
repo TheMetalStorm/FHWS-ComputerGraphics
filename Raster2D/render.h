@@ -3,9 +3,6 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
-using namespace Eigen;
-
 
 void lineMidpoint(Vector2i p0, Vector2i p1, GLfloat r, GLfloat g, GLfloat b) {
 	
