@@ -8,6 +8,7 @@
 #include "glut.h"			// Glut (Free-Glut on Windows)
 #include <cmath>
 #include <vector>
+#include <Eigen/Dense>
 
 using namespace std;
 
@@ -16,15 +17,6 @@ struct RGBPixel {
 	RGBPixel(GLfloat r = 0, GLfloat g = 0, GLfloat b = 0) : R(r), G(g), B(b) {};
 };
 
-struct float2 {
-	GLfloat x, y;
-	float2(GLfloat x = 0, GLfloat y = 0) : x(x), y(y){};
-};
-
-struct int2 {
-	GLint x, y;
-	int2(GLint x = 0, GLint y = 0) : x(x), y(y) {};
-};
 
 struct PassiveEdge {
 	int ymin, xmin, ymax, xmax;

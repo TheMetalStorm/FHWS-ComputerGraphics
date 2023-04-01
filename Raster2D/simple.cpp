@@ -9,8 +9,10 @@
 #include <string>
 
 using namespace std;
+using namespace Eigen;
 
 RGBPixel framebuffer[RESOLUTION][RESOLUTION];
+
 
 
 void setPixel(int x, int y, GLfloat r, GLfloat g, GLfloat b) {
@@ -76,57 +78,82 @@ int main(int argc, char* argv[])
 	//Uebung 1
 	
 	//2a)
-	//lineBresenheimFirstOctant(int2(250, 250), int2(500, 400), 1, 0, 0);
+//	lineBresenheimFirstOctant(Vector2i(250, 250), Vector2i(500, 400), 1, 0, 0);
 	//2b)
-	//lineBresenheim(int2(RESOLUTION/2, RESOLUTION / 2), int2(700, 500), 0, 1, 0);
-	//lineBresenheim(int2(0, 0), int2(600, 200), 0, 1, 0);
-
+//	lineBresenheim(Vector2i(0, 400), Vector2i(600, 200), 0, 1, 0);
 	//2c)
-	lineMidpoint(int2(0, 200), int2(200, 250), 0, 0, 1);
+//	lineMidpoint(Vector2i(0, 200), Vector2i(200, 250), 0, 0, 1);
 
 	//Uebung 2
 	//1)
-	circleMidpoint(400, 500, 50, .4, .6, 0);
+//	circleMidpoint(400, 500, 50, .4, .6, 0);
 	
 	//3
-	vector<int2> points{
+	vector<Vector2i> points{
 
-		int2(100,100),
-		int2(100,200),
-		int2(200,300),
-		int2(400,100),
-		int2(300,600),
-		int2(400,500)
+            Vector2i(100,100),
+            Vector2i(100,200),
+            Vector2i(200,300),
+            Vector2i(400,100),
+            Vector2i(300,600),
+            Vector2i(400,500),
+
+    };
+
+    vector<Vector2i> a{
+
+            Vector2i(100,100),
+            Vector2i(100,300),
+            Vector2i(300,300),
+            Vector2i(300,100),
+            Vector2i(500,100),
+            Vector2i(500,500),
+            };
+
+	vector<Vector2i> square{
+
+		Vector2i(100,100),
+		Vector2i(100,400),
+		Vector2i(400,400),
+		Vector2i(400,100)
 	};
-	
-	/*vector<int2> test{
+    vector<Vector2i> trig{
 
-		int2(100,100),
-		int2(100,400),
-		int2(400,400),
-		int2(400,100)
-	};*/
+            Vector2i(100,100),
+            Vector2i(200,100),
+            Vector2i(200,200)
+    };
 
-	//bezier(points, 1, 0, 0); 
-		
-	//TODO: 4) bsplines
+//	bezier(square, 1, 0, 0);
+    vector<float> knots = {0.1, 0.2, 0.3, 0.4, 0.49, 0.75, 1, 1, 1};
 
+	//FIXME: 4) bsplines
+    //bspline(points, knots, 0,1,0);
 
 	//Uebung 2
 	//1)
 	//a)
-	//paralelRect(int2(300, 500), int2(500, 300), .5, .5, 0);
+//	paralelRect(Vector2i(300, 500), Vector2i(500, 300), .5, .5, 0);
 	//b
-	//triangle(int2(100, 100), int2(300, 300), int2(50, 500), 1, 0, 0);
+//	triangle(Vector2i(100, 100), Vector2i(300, 300), Vector2i(50, 500), 1, 0, 0);
 	//c
-	polygon(points, 0, 0, 1);
-	framebufferToPPM(framebuffer, "export");
+
+    //FIXME
+//	polygon(points, 0, 0, 1);
+
+    catmullRom(a, 1,1,1);
+
+
+
+	framebufferToPPM(framebuffer, "withoutOutline");
 
 /////////////////////////////////
 	glutMainLoop();
 
     return 0;
 }
+
+
 
 
 
