@@ -197,27 +197,26 @@ int findIndex(vector<float> v, float f) {
     return 0;
 }
 
-Vector2i deBoor(const vector<Vector2i> &points, const vector<float> &knots,  int degree, float t) {
+Vector2i deBoor(const vector<Vector2f> &points, const vector<float> &knots, int n, float t) {
 
     int i = findIndex(knots, t);
 
+    vector<vector<Vector2f>> b(n + 1, vector<Vector2f>(n + 1));
 
-    vector<vector<Vector2i>> b(degree+1,vector<Vector2i>(degree+1));
-
-    for (int j = 0; j <= degree; j++) {
-        for (int l = i - degree + j; l <=i ; l++) {
+    for (int j = 0; j <= n; j++) {
+        for (int l = i - n + j; l <= i ; l++) {
             if(j==0){
                 b[l][0] = points[l];
             }
             else{
-                float ti = (t-knots[l])/(knots[l+degree+1-j]-knots[l]);
-                b[l][j].y() = (1.0f-ti) * (float)b[l-1][j-1].y()+ti*(float)b[l][j-1].y();
-                b[l][j].x() = (1.0f-ti) * (float)b[l-1][j-1].x()+ti*(float)b[l][j-1].x();
+                float ti = (t-knots[l])/(knots[l + n + 1 - j] - knots[l]);
+                b[l][j].y() = (1.0f-ti) * b[l-1][j-1].y()+ti*b[l][j-1].y();
+                b[l][j].x() = (1.0f-ti) * b[l-1][j-1].x()+ti*b[l][j-1].x();
             }
         }
     }
 
-    return b[i][degree];
+    return {b[i][n].x(), b[i][n].y()};
 }
 
 //FIXME: crash :(
@@ -231,12 +230,17 @@ void bspline(const vector<Vector2i>& points, const vector<float>& knots, GLfloat
     double tMax = knots[numIntervals];
     double tStep = (tMax - tMin) / (numPoints - 1);
 
+    const int s = points.size();
+    vector <Vector2f> temp;
 
+    for (int i = 0; i < s; i++) {
+        temp.emplace_back(points[i].x(), points[i].y());
+    }
 
     for (int i = degree; i < numIntervals; i++) {
         for (int j = 0; j < numPoints; j++) {
             double t = tMin + j * tStep;
-            Vector2i point = deBoor(points, knots, degree, t);
+            Vector2i point = deBoor(temp, knots, degree, t);
             setPixel(point.x(), point.y(), r,g,b);
         }
     }

@@ -142,7 +142,7 @@ void KeyPress(unsigned char key, int x, int y) {
         vector<float> knots = {0.1, 0.2, 0.3, 0.4, 0.49, 0.75, 1, 1, 1};
 
         //FIXME: 4) bsplines
-        //bspline(points, knots, 0,1,0);
+        bspline(points, knots, 0,1,0);
 
         //Uebung 2
         //1)
@@ -172,44 +172,44 @@ void KeyPress(unsigned char key, int x, int y) {
 
 
 
-    vector<Vector3i> square1 =
-            Transformer(toHomogeneousCoordinates(square))
-                .setModelMiddle({0, 0, 1})
-
-                    .scale(3,3)
-                    .translate(250,400)
-
-                    .transform();
-
-    paralelRect(square1[0], square1[1], 1,0,0);
-
-    vector<Vector3i> square2 =
-            Transformer(toHomogeneousCoordinates(square))
-                    .setModelMiddle({0, 0, 1})
-
-                    .scale(4,4)
-                    .translate(400,200)
-
-                    .transform();
-    paralelRect(square2[0], square2[1], 1,0,0);
-
-    vector<Vector3i> square3 =
-            Transformer(toHomogeneousCoordinates(sq))
-                    .setModelMiddle({0, 0, 1})
-                    .rotate(atanf((float)(trig[2].y()-trig[1].y()) / (float)(trig[2].x()-trig[1].x())))
-                    .scale(5,5)
-                    .translate(400,550)
-                    .transform();
-    polygon(square3, 1,0,0);
-
-    vector<Vector3i> trigtransformed =
-            Transformer(toHomogeneousCoordinates(trig))
-                    .setModelMiddle({0, 0, 1})
-                    .translate(400,400)
-                    .transform();
-    triangle(trigtransformed[0],trigtransformed[1],trigtransformed[2], 0,1,0);
-
-    setPixel(400,400,0,0,1);
+//    vector<Vector3i> square1 =
+//            Transformer(toHomogeneousCoordinates(square))
+//                .setModelMiddle({0, 0, 1})
+//
+//                    .scale(3,3)
+//                    .translate(250,400)
+//
+//                    .transform();
+//
+//    paralelRect(square1[0], square1[1], 1,0,0);
+//
+//    vector<Vector3i> square2 =
+//            Transformer(toHomogeneousCoordinates(square))
+//                    .setModelMiddle({0, 0, 1})
+//
+//                    .scale(4,4)
+//                    .translate(400,200)
+//
+//                    .transform();
+//    paralelRect(square2[0], square2[1], 1,0,0);
+//
+//    vector<Vector3i> square3 =
+//            Transformer(toHomogeneousCoordinates(sq))
+//                    .setModelMiddle({0, 0, 1})
+//                    .rotate(atanf((float)(trig[2].y()-trig[1].y()) / (float)(trig[2].x()-trig[1].x())))
+//                    .scale(5,5)
+//                    .translate(400,550)
+//                    .transform();
+//    polygon(square3, 1,0,0);
+//
+//    vector<Vector3i> trigtransformed =
+//            Transformer(toHomogeneousCoordinates(trig))
+//                    .setModelMiddle({0, 0, 1})
+//                    .translate(400,400)
+//                    .transform();
+//    triangle(trigtransformed[0],trigtransformed[1],trigtransformed[2], 0,1,0);
+//
+//    setPixel(400,400,0,0,1);
     framebufferToPPM(framebuffer, "pythagoras");
 
 /////////////////////////////////
