@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "simple.h"
+#include "transformation.h"
 #include <iostream>
 #include <algorithm>
 
@@ -241,6 +242,8 @@ void bspline(const vector<Vector2i>& points, const vector<float>& knots, GLfloat
     }
 }
 
+
+
 void paralelRect(Vector2i p0, Vector2i p1, GLfloat r, GLfloat g, GLfloat b) {
 
 	const int x0 = p0.x();
@@ -248,12 +251,16 @@ void paralelRect(Vector2i p0, Vector2i p1, GLfloat r, GLfloat g, GLfloat b) {
 	const int x1 = p1.x();
 	const int y1 = p1.y();
 
-	for (int y = y0; y > y1; y--) {
+    for (int y = y0; y >= y1; y--){
 		for (int x = x0; x <= x1; x++) {
 			setPixel(x, y, r, g, b);
 
 		}
 	}
+}
+
+void paralelRect(Vector3i p0, Vector3i p1, GLfloat r, GLfloat g, GLfloat b) {
+    paralelRect(Vector2i{p0.x(), p0.y()},Vector2i{p1.x(), p1.y()}, r,g,b);
 }
 
 void triangle(Vector2i p0, Vector2i p1, Vector2i p2, GLfloat r, GLfloat g, GLfloat b) {
@@ -290,6 +297,9 @@ void triangle(Vector2i p0, Vector2i p1, Vector2i p2, GLfloat r, GLfloat g, GLflo
 	}
 }
 
+void triangle(Vector3i p0, Vector3i p1, Vector3i p2, GLfloat r, GLfloat g, GLfloat b) {
+    triangle(toCartesianCoordinate(p0),toCartesianCoordinate(p1),toCartesianCoordinate(p2),r,g,b);
+}
 bool compareActiveEdge(const ActiveEdge& a, const ActiveEdge& b) {
 	return a.xs < b.xs;
 }
@@ -297,6 +307,7 @@ bool compareActiveEdge(const ActiveEdge& a, const ActiveEdge& b) {
 bool comparePassiveEdge(const PassiveEdge& a, const PassiveEdge& b) {
     return a.ymin < b.ymin;
 }
+
 
 //FIXME: todo
 void polygon(const vector<Vector2i>& points, GLfloat r, GLfloat g, GLfloat b) {
@@ -400,6 +411,10 @@ void polygon(const vector<Vector2i>& points, GLfloat r, GLfloat g, GLfloat b) {
 //        lineBresenheim(int2(e.xmin, e.ymin), int2(e.xmax, e.ymax), r,g,b);
 //    }
 
+}
+
+void polygon(const vector<Vector3i>& points, GLfloat r, GLfloat g, GLfloat b) {
+    polygon(toCartesianCoordinates(points),r,g,b);
 }
 
 Vector2i getCMSplinePoint(const vector<Vector2f>& pointsf, float t){

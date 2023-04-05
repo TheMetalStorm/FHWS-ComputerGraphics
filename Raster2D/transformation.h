@@ -2,20 +2,22 @@
 // Created by arapo on 01.04.2023.
 //
 
-#ifndef FH_CG_TRANSFORMATION_H
-#define FH_CG_TRANSFORMATION_H
+#pragma once
+
 #include "simple.h"
+Vector3i toHomogeneousCoordinate(const Vector2i& original);
 
-Vector3i toHomogeneousCoordinate(const Vector2i& original){
+vector<Vector3i> toHomogeneousCoordinates(const vector<Vector2i>& original);
 
-    return {original.x(), original.y() , 1};
-}
+Vector2i toCartesianCoordinate(const Vector3i& original);
 
-vector<Vector3i> toHomogeneousCoordinates(const vector<Vector2i>& original){
-    vector<Vector3i> res;
-    res.reserve(original.size());
-    transform(original.begin(), original.end(), back_inserter(res), toHomogeneousCoordinate);
-    return res;
-}
+vector<Vector2i> toCartesianCoordinates(const vector<Vector3i>& original);
 
-#endif //FH_CG_TRANSFORMATION_H
+Matrix3f generateTranslationMatrix(float moveX, float moveY);
+
+Matrix3f generateScalingMatrix(float scaleX, float scaleY);
+
+Matrix3f generateRotationMatrix(float byDegree);
+
+Matrix3f generateShearingMatrix(float x, float y);
+

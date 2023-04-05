@@ -82,7 +82,7 @@ build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
   DESC = No interactive CMake dialog available...
   restat = 1
 
-build edit_cache: phony CMakeFiles/edit_cache.util
+transform edit_cache: phony CMakeFiles/edit_cache.util
 
 
 #############################################

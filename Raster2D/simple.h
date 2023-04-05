@@ -32,6 +32,6 @@ struct ActiveEdge {
 
 
 
-const int RESOLUTION = 600;
+const int RESOLUTION = 800;
 
 void setPixel(int x, int y, GLfloat r, GLfloat g, GLfloat b);

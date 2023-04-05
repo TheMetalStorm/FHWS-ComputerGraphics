@@ -90,7 +90,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\arapo\CLionProjects\FH-CG\OpenGL-core\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2022.1.1\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SC:\Users\arapo\CLionProjects\FH-CG\OpenGL-core -BC:\Users\arapo\CLionProjects\FH-CG\OpenGL-core\cmake-build-debug"
+  COMMAND = cmd.exe /C "cd /D C:\Users\arapo\CLionProjects\FH-CG\OpenGL-core\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2022.1.1\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SC:\Users\arapo\CLionProjects\FH-CG\OpenGL-core -BC:\Users\arapo\CLionProjects\FH-CG\OpenGL-core\cmake-transform-debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
