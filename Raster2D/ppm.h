@@ -5,6 +5,7 @@
 
 const int maxColorVal = 65535;
 
+//Todo fix
 void framebufferToPPM(const RGBPixel framebuffer[RESOLUTION][RESOLUTION], std::string filename) {
 
 	ofstream out(filename + ".ppm");

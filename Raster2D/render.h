@@ -3,31 +3,138 @@
 #include "transformation.h"
 #include <iostream>
 #include <algorithm>
+#include <utility>
 
+const int INSIDE = 0; // 0000
+const int LEFT = 1; // 0001
+const int RIGHT = 2; // 0010
+const int BOTTOM = 4; // 0100
+const int TOP = 8; // 1000
 
+int Outcode(float x, float y, int x_min, int y_min, int x_max, int y_max)
+{
+    // initialized as being inside
+    int code = INSIDE;
 
-void lineMidpoint(Vector2i p0, Vector2i p1, GLfloat r, GLfloat g, GLfloat b) {
-	
-	int x0 = p0.x();
-	int y0 = p0.x();
-	int x1 = p1.x();
-	int y1 = p1.y();
+    if (x < x_min) // to the left of rectangle
+        code |= LEFT;
+    else if (x > x_max) // to the right of rectangle
+        code |= RIGHT;
+    if (y < y_min) // below the rectangle
+        code |= BOTTOM;
+    else if (y > y_max) // above the rectangle
+        code |= TOP;
 
-	int x = x0;
-	int y = y0;
-	const int dx = x1 - x0;
-	const int dy = y1 - y0;
-	int f = dy - dx / 2;
-	for (int i = 1; i < dx; i++) {
-		setPixel(x, y, r, g, b);
-		x++;
-		if (f > 0) {
-			y += 1;
-			f -= dx;
-		}
-		f += dy;
-	}
+    return code;
 }
+
+//src: https://www.geeksforgeeks.org/line-clipping-set-1-cohen-sutherland-algorithm/
+bool getClippedPoints(const Vector2i& oldP0, Vector2i oldP1, Vector2i *newP0, Vector2i *newP1, int x_min, int y_min, int x_max, int y_max){
+
+
+    float x1 = oldP0.x();
+    float y1 = oldP0.y();
+    float x2 = oldP1.x();
+    float y2 = oldP1.y();
+    int code1 = Outcode(oldP0.x(), oldP0.y(), x_min, y_min, x_max, y_max);
+    int code2 = Outcode(oldP1.x(), oldP1.y(), x_min, y_min, x_max, y_max);
+
+    bool accept = false;
+    while(true){
+        if ((code1 == 0) && (code2 == 0)){
+            accept = true;
+            break;
+        }
+        else if( code1 & code2){
+            break;
+        }
+        else{
+            int code_out;
+            double x, y;
+
+            if (code1 != 0)
+                code_out = code1;
+            else
+                code_out = code2;
+
+            if (code_out & TOP) {
+                // point is above the clip rectangle
+                x = x1 + (x2 - x1) * ((float)y_max - y1) / (y2 - y1);
+                y = y_max;
+            }
+            else if (code_out & BOTTOM) {
+                // point is below the rectangle
+                x = x1 + (x2 - x1) * ((float)y_min - y1) / (y2 - y1);
+                y = y_min;
+            }
+            else if (code_out & RIGHT) {
+                // point is to the right of rectangle
+                y = y1 + (y2 - y1) * ((float)x_max - x1) / (x2 - x1);
+                x = x_max;
+            }
+            else if (code_out & LEFT) {
+                // point is to the left of rectangle
+                y = y1 + (y2 - y1) * ((float)x_min - x1) / (x2 - x1);
+                x = x_min;
+            }
+
+            // Now intersection point x, y is found
+            // We replace point outside rectangle
+            // by intersection point
+            if (code_out == code1) {
+                x1 = x;
+                y1 = y;
+                code1 = Outcode(x1, y1, x_min, y_min, x_max, y_max);
+            }
+            else {
+                x2 = x;
+                y2 = y;
+                code2 = Outcode(x2, y2, x_min, y_min, x_max, y_max);
+            }
+
+        }
+    }
+    if(accept){
+        *newP0 = {x1, y1};
+        *newP1 = {x2, y2};
+    }
+    else{
+        *newP0 = {};
+        *newP1 = {};
+    }
+
+    return accept;
+}
+
+void lineMidpoint(const Vector2i& p0, const Vector2i&  p1, GLfloat r, GLfloat g, GLfloat b) {
+
+    Vector2i temp0, temp1;
+    bool passed = getClippedPoints(p0, p1, &temp0, &temp1, 0, 0, RESOLUTION, RESOLUTION);
+
+    if(passed){
+        int x0 = temp0.x();
+        int y0 = temp0.y();
+        int x1 = temp1.x();
+        int y1 = temp1.y();
+
+        int x = x0;
+        int y = y0;
+        const int dx = x1 - x0;
+        const int dy = y1 - y0;
+        int f = dy - dx / 2;
+        for (int i = 1; i < dx; i++) {
+            setPixel(x, y, r, g, b);
+            x++;
+            if (f > 0) {
+                y += 1;
+                f -= dx;
+            }
+            f += dy;
+        }
+    }
+
+}
+
 
 void circleMidpoint(int x, int y, int radius, GLfloat r, GLfloat g, GLfloat b) {
 	int x1 = 0;
@@ -259,7 +366,6 @@ Vector2i closedbspline(const vector<Vector2f> &points, const vector<float> &knot
 }
 
 
-//FIXME: crash :(
 void bspline(const vector<Vector2i>& points, const vector<float>& knots, bool closed, GLfloat r, GLfloat g, GLfloat b){
     int degree = 2;
     int numKnots = knots.size();
@@ -277,6 +383,7 @@ void bspline(const vector<Vector2i>& points, const vector<float>& knots, bool cl
     }
 
     if(closed){
+        //FIXME: crash :(
         for (int i = degree; i < numIntervals; i++) {
             for (int j = 0; j < numPoints; j++) {
                 double t = tMin + j * tStep;
@@ -298,21 +405,18 @@ void bspline(const vector<Vector2i>& points, const vector<float>& knots, bool cl
 
 }
 
-
-
 void paralelRect(Vector2i p0, Vector2i p1, GLfloat r, GLfloat g, GLfloat b) {
 
-	const int x0 = p0.x();
-	const int y0 = p0.y();
-	const int x1 = p1.x();
-	const int y1 = p1.y();
+    //clipping for paralelRect >_>
+    //TODO: change when lineMidpoint clipping is implemented
+	const int x0 = p0.x();// < 0 ? 0 : p0.x();
+	const int y0 = p0.y();//> RESOLUTION ? RESOLUTION : p0.y();
+	const int x1 = p1.x();// > RESOLUTION ? RESOLUTION : p1.x();
+	const int y1 = p1.y();//<0? 0:p1.y();
 
     for (int y = y0; y >= y1; y--){
-		for (int x = x0; x <= x1; x++) {
-			setPixel(x, y, r, g, b);
-
-		}
-	}
+        lineMidpoint({x0,y},{x1,y}, r,g,b);
+    }
 }
 
 void paralelRect(Vector3i p0, Vector3i p1, GLfloat r, GLfloat g, GLfloat b) {
@@ -365,7 +469,6 @@ bool comparePassiveEdge(const PassiveEdge& a, const PassiveEdge& b) {
 }
 
 
-//FIXME: todo
 void polygon(const vector<Vector2i>& points, GLfloat r, GLfloat g, GLfloat b) {
 	int minY = 2147483647;
 	int maxY = 0;
@@ -462,10 +565,9 @@ void polygon(const vector<Vector2i>& points, GLfloat r, GLfloat g, GLfloat b) {
 
 	}
 
-    //TODO: find out if i need this and if not, how my algorithm has to change
-//    for(PassiveEdge e : passiveCopy){
-//        lineBresenheim(int2(e.xmin, e.ymin), int2(e.xmax, e.ymax), r,g,b);
-//    }
+    for(PassiveEdge e : passiveCopy){
+        lineBresenheim(Vector2i(e.xmin, e.ymin), Vector2i(e.xmax, e.ymax), r,g,b);
+    }
 
 }
 
