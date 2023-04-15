@@ -139,10 +139,10 @@ void KeyPress(unsigned char key, int x, int y) {
             Vector2i(50, 0)
     };
 //	bezier(square, 1, 0, 0);
-        vector<float> knots = {0.1, 0.2, 0.3, 0.4, 0.49, 0.75, 1, 1, 1};
+        vector<float> knots = {0, 0, 0, 1, 2, 3, 4, 4, 4};
 
         //FIXME: 4) bsplines
-        bspline(points, knots, 0,1,0);
+       bspline(points, knots,true, 0,1,0);
 
         //Uebung 2
         //1)

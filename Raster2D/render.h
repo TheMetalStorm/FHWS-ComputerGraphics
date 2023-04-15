@@ -5,6 +5,7 @@
 #include <algorithm>
 
 
+
 void lineMidpoint(Vector2i p0, Vector2i p1, GLfloat r, GLfloat g, GLfloat b) {
 	
 	int x0 = p0.x();
@@ -197,11 +198,11 @@ int findIndex(vector<float> v, float f) {
     return 0;
 }
 
-Vector2i deBoor(const vector<Vector2f> &points, const vector<float> &knots, int n, float t) {
+Vector2i openbspline(const vector<Vector2f> &points, const vector<float> &knots, int n, float t) {
 
     int i = findIndex(knots, t);
 
-    vector<vector<Vector2f>> b(n + 1, vector<Vector2f>(n + 1));
+    vector<vector<Vector2f>> b(100, vector<Vector2f>(100));
 
     for (int j = 0; j <= n; j++) {
         for (int l = i - n + j; l <= i ; l++) {
@@ -209,9 +210,9 @@ Vector2i deBoor(const vector<Vector2f> &points, const vector<float> &knots, int 
                 b[l][0] = points[l];
             }
             else{
-                float ti = (t-knots[l])/(knots[l + n + 1 - j] - knots[l]);
-                b[l][j].y() = (1.0f-ti) * b[l-1][j-1].y()+ti*b[l][j-1].y();
-                b[l][j].x() = (1.0f-ti) * b[l-1][j-1].x()+ti*b[l][j-1].x();
+                float tjl = (t - knots[l]) / (knots[l + n + 1 - j] - knots[l]);
+                b[l][j].y() = (1.0f - tjl) * b[l - 1][j - 1].y() + tjl * b[l][j - 1].y();
+                b[l][j].x() = (1.0f - tjl) * b[l - 1][j - 1].x() + tjl * b[l][j - 1].x();
             }
         }
     }
@@ -219,13 +220,51 @@ Vector2i deBoor(const vector<Vector2f> &points, const vector<float> &knots, int 
     return {b[i][n].x(), b[i][n].y()};
 }
 
+
+//fixme
+Vector2i closedbspline(const vector<Vector2f> &points, const vector<float> &knots, int n, float t) {
+    int i = findIndex(knots, t);
+
+    int m = points.size()-1;
+    vector<vector<Vector2f>> b(100, vector<Vector2f>(100));
+
+    for (int j = 0; j <= n; j++) {
+        int l = i-n+j-1;
+        do{
+            l +=1;
+            if(l<0){
+                l = l+m+1;
+                t = t-knots[0]+knots[m+1];
+            }
+            else{
+                if(l>=m+1){
+                    l = l-m-1;
+                    t=t-knots[m+1]+knots[0];
+                }
+            }
+            if(j == 0){
+                b[l][0] = points[l];
+            }
+            else{
+                float tjl = (t - knots[l]) / (knots[l + n + 1 - j] - knots[l]);
+
+                b[l][j].y() = (1.0f - tjl) * b[(l - 1)%(m+1)][j - 1].y() + tjl * b[l][j - 1].y();
+                b[l][j].x() = (1.0f - tjl) * b[(l - 1)%(m+1)][j - 1].x() + tjl * b[l][j - 1].x();
+            }
+        }
+        while(l!=i);
+    }
+
+    return {b[i][n].x(), b[i][n].y()};
+}
+
+
 //FIXME: crash :(
-void bspline(const vector<Vector2i>& points, const vector<float>& knots, GLfloat r, GLfloat g, GLfloat b){
- int degree = 2;
-    int numControlPoints = points.size();
+void bspline(const vector<Vector2i>& points, const vector<float>& knots, bool closed, GLfloat r, GLfloat g, GLfloat b){
+    int degree = 2;
     int numKnots = knots.size();
     int numIntervals = numKnots - degree - 1;
-    int numPoints = 100; // Number of points to generate on the curve
+    int numPoints = 2000; // Number of points to generate on the curve
     double tMin = knots[degree];
     double tMax = knots[numIntervals];
     double tStep = (tMax - tMin) / (numPoints - 1);
@@ -237,13 +276,26 @@ void bspline(const vector<Vector2i>& points, const vector<float>& knots, GLfloat
         temp.emplace_back(points[i].x(), points[i].y());
     }
 
-    for (int i = degree; i < numIntervals; i++) {
-        for (int j = 0; j < numPoints; j++) {
-            double t = tMin + j * tStep;
-            Vector2i point = deBoor(temp, knots, degree, t);
-            setPixel(point.x(), point.y(), r,g,b);
+    if(closed){
+        for (int i = degree; i < numIntervals; i++) {
+            for (int j = 0; j < numPoints; j++) {
+                double t = tMin + j * tStep;
+                Vector2i point = closedbspline(temp, knots, degree, t);
+                setPixel(point.x(), point.y(), r,g,b);
+            }
         }
     }
+
+    else{
+        for (int i = degree; i < numIntervals; i++) {
+            for (int j = 0; j < numPoints; j++) {
+                double t = tMin + j * tStep;
+                Vector2i point = openbspline(temp, knots, degree, t);
+                setPixel(point.x(), point.y(), r,g,b);
+            }
+        }
+    }
+
 }
 
 
