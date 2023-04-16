@@ -86,7 +86,7 @@ void KeyPress(unsigned char key, int x, int y) {
         //2b)
 //	lineBresenheim(Vector2i(0, 400), Vector2i(600, 200), 0, 1, 0);
         //2c)
-    lineMidpoint(Vector2i(-100, 200), Vector2i(200, 250), 0, 0, 1);
+//    lineMidpoint(Vector2i(-100, 200), Vector2i(200, 250), 0, 0, 1);
 
         //Uebung 2
         //1)
@@ -123,10 +123,17 @@ void KeyPress(unsigned char key, int x, int y) {
 
         vector<Vector2i> trig{
 
-                Vector2i(0, 0),
-                Vector2i(200, 0),
-                Vector2i(0, 150)
+                Vector2i(700, 700),
+                Vector2i(900, 700),
+                Vector2i(800, 900)
         };
+
+    vector<Vector2i> trig2{
+
+            Vector2i(-100, -100),
+            Vector2i(100, -100),
+            Vector2i(0, 200)
+    };
 
     vector<Vector2i> square{
             Vector2i(0, 50),
@@ -147,11 +154,20 @@ void KeyPress(unsigned char key, int x, int y) {
         //Uebung 2
         //1)
         //a)
-        paralelRect(Vector2i(30, 300), Vector2i(900, -200), .5, .5, 0);
+//        paralelRect(Vector2i(30, 300), Vector2i(900, -200), .5, .5, 0);
         //b
         //triangle(Vector2i(100, 100), Vector2i(300, 300), Vector2i(50, 500), 1, 0, 0);
         //c
-//        	polygon(points, 0, 0, 1);
+        	polygon(trig, 0, 0, 1);
+    polygon(trig2, 1, 0, 1);
+
+    vector<Vector3i> bigPoints =
+            Transformer(toHomogeneousCoordinates(points))
+                    .setModelMiddleAsAverageVector()
+                    .scale(4,4)
+                    .transform();
+
+    polygon(bigPoints, 1, 1, 1);
 
 //    catmullRom(a, 1,1,1);
 

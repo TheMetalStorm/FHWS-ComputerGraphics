@@ -4,6 +4,8 @@
 #include <iostream>
 #include <algorithm>
 #include <utility>
+#include <bits/stdc++.h>
+
 
 const int INSIDE = 0; // 0000
 const int LEFT = 1; // 0001
@@ -11,7 +13,8 @@ const int RIGHT = 2; // 0010
 const int BOTTOM = 4; // 0100
 const int TOP = 8; // 1000
 
-int Outcode(float x, float y, int x_min, int y_min, int x_max, int y_max)
+
+int Outcode(double x, double y, int x_min, int y_min, int x_max, int y_max)
 {
     // initialized as being inside
     int code = INSIDE;
@@ -29,13 +32,13 @@ int Outcode(float x, float y, int x_min, int y_min, int x_max, int y_max)
 }
 
 //src: https://www.geeksforgeeks.org/line-clipping-set-1-cohen-sutherland-algorithm/
-bool getClippedPoints(const Vector2i& oldP0, Vector2i oldP1, Vector2i *newP0, Vector2i *newP1, int x_min, int y_min, int x_max, int y_max){
+bool getClippedPoints(const Vector2i& oldP0, const Vector2i& oldP1, Vector2i *newP0, Vector2i *newP1, int x_min, int y_min, int x_max, int y_max){
 
 
-    float x1 = oldP0.x();
-    float y1 = oldP0.y();
-    float x2 = oldP1.x();
-    float y2 = oldP1.y();
+    double x1 = oldP0.x();
+    double y1 = oldP0.y();
+    double x2 = oldP1.x();
+    double y2 = oldP1.y();
     int code1 = Outcode(oldP0.x(), oldP0.y(), x_min, y_min, x_max, y_max);
     int code2 = Outcode(oldP1.x(), oldP1.y(), x_min, y_min, x_max, y_max);
 
@@ -408,7 +411,6 @@ void bspline(const vector<Vector2i>& points, const vector<float>& knots, bool cl
 void paralelRect(Vector2i p0, Vector2i p1, GLfloat r, GLfloat g, GLfloat b) {
 
     //clipping for paralelRect >_>
-    //TODO: change when lineMidpoint clipping is implemented
 	const int x0 = p0.x();// < 0 ? 0 : p0.x();
 	const int y0 = p0.y();//> RESOLUTION ? RESOLUTION : p0.y();
 	const int x1 = p1.x();// > RESOLUTION ? RESOLUTION : p1.x();
@@ -468,24 +470,80 @@ bool comparePassiveEdge(const PassiveEdge& a, const PassiveEdge& b) {
     return a.ymin < b.ymin;
 }
 
+vector<Vector2i> getClippedPolygon(const vector<Vector2i> &toClip) {
+
+    vector<Vector2i> res = toClip;
+
+    vector<vector<int>> clipper = {
+            {0, INT_MIN, INT_MAX, INT_MAX},
+            {INT_MIN, INT_MIN, RESOLUTION, INT_MAX},
+            {INT_MIN, 0, INT_MAX, INT_MAX},
+            {INT_MIN, INT_MIN, INT_MAX, RESOLUTION},
+    };
+
+    for (const auto &currentClipper: clipper){
+        vector<Vector2i> temp;
+        for (int i = 1; i<=res.size(); i++){
+            Vector2i p0,p1;
+            if(i == res.size()){
+                p0 = res[i-1];
+                p1 = res[0];
+            }
+            else{
+                p0 = res[i-1];
+                p1 = res[i];
+            }
+
+
+            int code1 = Outcode(p0.x(),p0.y(), currentClipper[0], currentClipper[1], currentClipper[2], currentClipper[3]);
+            int code2 = Outcode(p1.x(),p1.y(), currentClipper[0], currentClipper[1], currentClipper[2], currentClipper[3]);
+
+            if(code1 != 0 && code2!=0){
+                continue;
+            }
+            else if(code1 == 0 && code2==0){
+                temp.emplace_back(p1);
+            }
+            else if(code1 != 0){
+
+                Vector2i new0, new1;
+                getClippedPoints(p0,p1, &new0, &new1,currentClipper[0], currentClipper[1], currentClipper[2], currentClipper[3]);
+                temp.emplace_back(new0);
+                temp.emplace_back(p1);
+            }
+            else{
+                Vector2i new0, new1;
+                getClippedPoints(p0,p1, &new1, &new1,currentClipper[0], currentClipper[1], currentClipper[2], currentClipper[3]);
+                temp.emplace_back(new1);
+            }
+        }
+        res = {};
+        res = temp;
+    }
+
+
+    return res;
+}
 
 void polygon(const vector<Vector2i>& points, GLfloat r, GLfloat g, GLfloat b) {
-	int minY = 2147483647;
+
+    vector<Vector2i> clippedPoints = getClippedPolygon(points);
+    int minY = 2147483647;
 	int maxY = 0;
 
 	vector<PassiveEdge> passive;
 
-	for (int i = 0; i < points.size(); i++) {
+	for (int i = 0; i < clippedPoints.size(); i++) {
 
 		PassiveEdge e;
         Vector2i a, be;
 		if (i == 0) {
-			a = points[points.size() - 1];
-            be = points[0];
+			a = clippedPoints[clippedPoints.size() - 1];
+            be = clippedPoints[0];
 		}
 		else {
-			a = points[i - 1];
-            be = points[i];
+			a = clippedPoints[i - 1];
+            be = clippedPoints[i];
 		}
 
 		e.ymin = a.y() < be.y() ? a.y() : be.y();
@@ -501,7 +559,7 @@ void polygon(const vector<Vector2i>& points, GLfloat r, GLfloat g, GLfloat b) {
     vector<PassiveEdge> passiveCopy = passive;
 
 
-	for (Vector2i p : points) {
+	for (Vector2i p : clippedPoints) {
 		if (p.y() < minY) {
 			minY = p.y();
 		}
@@ -570,6 +628,7 @@ void polygon(const vector<Vector2i>& points, GLfloat r, GLfloat g, GLfloat b) {
     }
 
 }
+
 
 void polygon(const vector<Vector3i>& points, GLfloat r, GLfloat g, GLfloat b) {
     polygon(toCartesianCoordinates(points),r,g,b);
