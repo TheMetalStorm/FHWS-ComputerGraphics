@@ -5,7 +5,7 @@
 #include "GL/glew.h"
 #include "GL/gl.h"
 #include "GL/glu.h"
-#include "glut.h"			// Glut (Free-Glut on Windows)
+#include "freeglut.h"			// Glut (Free-Glut on Windows)
 #include <cmath>
 #include <vector>
 #include <Eigen/Dense>

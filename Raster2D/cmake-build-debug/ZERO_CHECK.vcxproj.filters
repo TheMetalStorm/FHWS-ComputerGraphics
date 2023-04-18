@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\arapo\CLionProjects\FH-CG\Raster2D\cmake-build-debug\CMakeFiles\eb5700b17d938abe8e7f3c458643a8c6\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{37CCB8A1-67ED-37E6-AEA2-F98291BE040B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

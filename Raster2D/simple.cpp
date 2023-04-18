@@ -156,10 +156,10 @@ void KeyPress(unsigned char key, int x, int y) {
         //a)
 //        paralelRect(Vector2i(30, 300), Vector2i(900, -200), .5, .5, 0);
         //b
-        //triangle(Vector2i(100, 100), Vector2i(300, 300), Vector2i(50, 500), 1, 0, 0);
+        triangle(Vector2i(100, 100), Vector2i(300, 300), Vector2i(50, 500), 1, 0, 0);
         //c
-        	polygon(trig, 0, 0, 1);
-    polygon(trig2, 1, 0, 1);
+//        	polygon(trig, 0, 0, 1);
+//    polygon(trig2, 1, 0, 1);
 
     vector<Vector3i> bigPoints =
             Transformer(toHomogeneousCoordinates(points))

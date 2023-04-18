@@ -14,6 +14,8 @@ const int BOTTOM = 4; // 0100
 const int TOP = 8; // 1000
 
 
+
+
 int Outcode(double x, double y, int x_min, int y_min, int x_max, int y_max)
 {
     // initialized as being inside
@@ -425,7 +427,34 @@ void paralelRect(Vector3i p0, Vector3i p1, GLfloat r, GLfloat g, GLfloat b) {
     paralelRect(Vector2i{p0.x(), p0.y()},Vector2i{p1.x(), p1.y()}, r,g,b);
 }
 
-void triangle(Vector2i p0, Vector2i p1, Vector2i p2, GLfloat r, GLfloat g, GLfloat b) {
+Vector3f getBarycentricCoordiantes(const Vector2i& a, const Vector2i& b, const Vector2i& c, int x, int y) {
+    float w1, w2,  w3;
+
+    w1 = (((float)a.x() * ((float)c.y() - (float)a.y()) + ((float)y - (float)a.y()) * ((float)c.x() - (float)a.x()) - (float)x * (float)(c.y() - a.y()))) /
+         (float)((b.y() - a.y()) * (c.x() - a.x()) - (b.x() - a.x()) * (c.y() - a.y()));
+
+    w2 = ((float)y - (float)a.y() - w1 * ((float)b.y() - (float)a.y())) / ((float)c.y() - (float)a.y());
+
+    w3 = 1.0f-w1-w2;
+
+    return {w3, w1, w2};
+}
+
+RGBPixel mixColor(const Vector2i& p0, const Vector2i& p1, const Vector2i& p2, RGBPixel c0, RGBPixel c1, RGBPixel c2, int x, int y) {
+
+    //get Barycentric Coordinates for current point
+    Vector3f bary = getBarycentricCoordiantes(p0, p1, p2, x,y);
+
+
+    //micColors according  to coordinated
+
+
+    return RGBPixel();
+}
+
+
+
+void triangle(Vector2i p0, Vector2i p1, Vector2i p2, RGBPixel c0,RGBPixel c1,RGBPixel c2) {
 
 	const int x0 = p0.x();
 	const int y0 = p0.y();
@@ -447,8 +476,10 @@ void triangle(Vector2i p0, Vector2i p1, Vector2i p2, GLfloat r, GLfloat g, GLflo
 	for (int y = ymin; y <= ymax; y++) {
 		int ff0 = f0, ff1 = f1, ff2 = f2;
 		for (int x = xmin; x <= xmax; x++) {
-			if (ff0 >= 0 && ff1 >= 0 && ff2 >= 0)
-				setPixel(x, y, r, g, b);
+			if (ff0 >= 0 && ff1 >= 0 && ff2 >= 0){
+                RGBPixel mixed = mixColor( p0, p1, p2,c0, c1, c2, x, y);
+                setPixel(x, y, mixed.R, mixed.G, mixed.B);
+            }
 			ff0 = ff0 + (y0 - y1);
 			ff1 = ff1 + (y1 - y2);
 			ff2 = ff2 + (y2 - y0);
@@ -457,6 +488,12 @@ void triangle(Vector2i p0, Vector2i p1, Vector2i p2, GLfloat r, GLfloat g, GLflo
 		f1 = f1 + (x2 - x1);
 		f2 = f2 + (x0 - x2);
 	}
+}
+
+
+
+void triangle(Vector2i p0, Vector2i p1, Vector2i p2, GLfloat r, GLfloat g, GLfloat b) {
+    triangle(p0, p1, p2, RGBPixel(r,g,b), RGBPixel(r,g,b), RGBPixel(r,g,b));
 }
 
 void triangle(Vector3i p0, Vector3i p1, Vector3i p2, GLfloat r, GLfloat g, GLfloat b) {
@@ -624,6 +661,7 @@ void polygon(const vector<Vector2i>& points, GLfloat r, GLfloat g, GLfloat b) {
 	}
 
     for(PassiveEdge e : passiveCopy){
+        //should use lineMidpoint, but that bugs out so whatevs until i have problems
         lineBresenheim(Vector2i(e.xmin, e.ymin), Vector2i(e.xmax, e.ymax), r,g,b);
     }
 

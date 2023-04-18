@@ -1,0 +1,10 @@
+^C:\USERS\ARAPO\CLIONPROJECTS\FH-CG\RASTER2D\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\JetBrains\CLion 2022.1.1\bin\cmake\win\bin\cmake.exe" -SC:/Users/arapo/CLionProjects/FH-CG/Raster2D -BC:/Users/arapo/CLionProjects/FH-CG/Raster2D/cmake-build-debug --check-stamp-file C:/Users/arapo/CLionProjects/FH-CG/Raster2D/cmake-build-debug/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
