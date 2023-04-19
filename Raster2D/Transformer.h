@@ -9,7 +9,7 @@
 class Transformer {
 
 public:
-    explicit Transformer (vector<Vector3i> toTransform);
+    explicit Transformer (const vector<Vector3i>& toTransform);
 
     Transformer& translate(float byX, float byY);
 

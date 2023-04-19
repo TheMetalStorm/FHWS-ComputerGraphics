@@ -1,3 +1,3 @@
-C:/Users/arapo/CLionProjects/FH-CG/Raster2D/cmake-build-debug/CMakeFiles/FH_CG.dir
-C:/Users/arapo/CLionProjects/FH-CG/Raster2D/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/arapo/CLionProjects/FH-CG/Raster2D/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/CMakeFiles/FH_CG.dir
+C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/CMakeFiles/rebuild_cache.dir

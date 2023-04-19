@@ -3,8 +3,8 @@
 //
 
 #pragma once
-
 #include "simple.h"
+
 Vector3i toHomogeneousCoordinate(const Vector2i& original);
 
 vector<Vector3i> toHomogeneousCoordinates(const vector<Vector2i>& original);

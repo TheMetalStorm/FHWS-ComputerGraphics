@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\FH_CG.dir/objects.a
+C:\msys64\mingw64\bin\ar.exe qc CMakeFiles\FH_CG.dir/objects.a @CMakeFiles\FH_CG.dir\objects1.rsp
+C:\msys64\mingw64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\FH_CG.dir/objects.a -Wl,--no-whole-archive -o FH_CG.exe -Wl,--out-implib,libFH_CG.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\FH_CG.dir\linklibs.rsp

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="FH_CG"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="FH_CG">
+				<Option output="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/FH_CG.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/../../../../include/c++/12.2.0"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/../../../../include/c++/12.2.0/x86_64-w64-mingw32"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/../../../../include/c++/12.2.0/backward"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/include"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/../../../../include"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 FH_CG"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="FH_CG/fast">
+				<Option output="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/FH_CG.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/../../../../include/c++/12.2.0"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/../../../../include/c++/12.2.0/x86_64-w64-mingw32"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/../../../../include/c++/12.2.0/backward"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/include"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/../../../../include"/>
+					<Add directory="C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/12.2.0/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 FH_CG/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/Transformer.cpp">
+			<Option target="FH_CG"/>
+		</Unit>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/Transformer.h">
+			<Option target="FH_CG"/>
+		</Unit>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/ppm.h">
+			<Option target="FH_CG"/>
+		</Unit>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/render.h">
+			<Option target="FH_CG"/>
+		</Unit>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/simple.cpp">
+			<Option target="FH_CG"/>
+		</Unit>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/simple.h">
+			<Option target="FH_CG"/>
+		</Unit>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/transformation.cpp">
+			<Option target="FH_CG"/>
+		</Unit>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/transformation.h">
+			<Option target="FH_CG"/>
+		</Unit>
+		<Unit filename="C:/Users/arapo/CLionProjects/FHWS-ComputerGraphics/Raster2D/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

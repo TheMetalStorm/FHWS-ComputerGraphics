@@ -9,15 +9,14 @@
 
 
 Matrix3f multiplyMatrices( std::vector<Matrix3f>& matrices) {
-    std::reverse(matrices.begin(), matrices.end());
     // Multiply all matrices in the vector using std::accumulate
-    return accumulate(matrices.begin() + 1, matrices.end(), matrices.front(),
+    return accumulate(matrices.rbegin()+1, matrices.rend(), *matrices.rbegin(),
                            [](const Matrix3f& result, const Matrix3f& matrix) {
                                return result * matrix;
                            });
 }
 
-Transformer::Transformer(vector<Vector3i> toTransform) {
+Transformer::Transformer(const vector<Vector3i>& toTransform) {
 
     localTransform.setZero();
     Matrix3f identity {
