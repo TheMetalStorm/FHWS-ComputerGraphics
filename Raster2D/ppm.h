@@ -17,7 +17,7 @@ void framebufferToPPM(const RGBPixel framebuffer[RESOLUTION][RESOLUTION], std::s
 	for (int y = RESOLUTION - 1; y >= 0; y--) {
 		for (int x = 0; x < RESOLUTION; x++) {
 			const RGBPixel current = framebuffer[x][y];
-			out << current.R * maxColorVal << " " << current.G * maxColorVal << " " << current.B * maxColorVal << " ";
+			out << current.x() * maxColorVal << " " << current.y() * maxColorVal << " " << current.z() * maxColorVal << " ";
 		}
 		out << endl;
 	}

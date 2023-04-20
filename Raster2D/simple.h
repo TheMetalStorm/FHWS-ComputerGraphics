@@ -13,10 +13,11 @@
 using namespace std;
 using namespace Eigen;
 
-struct RGBPixel {
-	GLfloat R, G, B;
-	RGBPixel(GLfloat r = 0, GLfloat g = 0, GLfloat b = 0) : R(r), G(g), B(b) {};
-};
+typedef Vector3f RGBPixel ;
+//struct RGBPixel {
+//	GLfloat R, G, B;
+//	RGBPixel(GLfloat r = 0, GLfloat g = 0, GLfloat b = 0) : R(r), G(g), B(b) {};
+//};
 
 
 struct PassiveEdge {

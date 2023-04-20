@@ -36,9 +36,9 @@ void RenderScene(void)
 	for (int y = 0; y < RESOLUTION; y++)		
 		for (int x = 0; x < RESOLUTION; x++) {
 			const RGBPixel& p = framebuffer[x][y];
-			if (p.R == 0 && p.G == 0 && p.B == 0)
+			if (p.x() == 0 && p.y() == 0 && p.z() == 0)
 				continue;
-			glColor3f(p.R, p.G, p.B);
+			glColor3f(p.x(), p.y(), p.z());
 			GLfloat vpx = GLfloat(x) * 2.0f / GLfloat(RESOLUTION) - 1.0f;
 			GLfloat vpy = GLfloat(y) * 2.0f / GLfloat(RESOLUTION) - 1.0f;
 			glRectf(vpx, vpy, vpx + d, vpy + d);
@@ -156,15 +156,15 @@ void KeyPress(unsigned char key, int x, int y) {
         //a)
 //        paralelRect(Vector2i(30, 300), Vector2i(900, -200), .5, .5, 0);
         //b
-        triangle(Vector2i(100, 100), Vector2i(300, 300), Vector2i(50, 500), 1, 0, 0);
+//        triangle({100, 100}, {300, 300}, {50, 500}, {0,0,1}, {0,1,0}, {1,0,0});
         //c
-//        	polygon(trig, 0, 0, 1);
-//    polygon(trig2, 1, 0, 1);
+        	polygon(trig, 0, 0, 1);
+    polygon(trig2, 1, 0, 1);
 
     vector<Vector3i> bigPoints =
             Transformer(toHomogeneousCoordinates(points))
                     .setModelMiddleAsAverageVector()
-                    .scale(4,4)
+                    .scale(1,1)
                     .transform();
 
     polygon(bigPoints, 1, 1, 1);

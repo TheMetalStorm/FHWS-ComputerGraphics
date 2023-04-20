@@ -440,21 +440,14 @@ Vector3f getBarycentricCoordiantes(const Vector2i& a, const Vector2i& b, const V
     return {w3, w1, w2};
 }
 
-RGBPixel mixColor(const Vector2i& p0, const Vector2i& p1, const Vector2i& p2, RGBPixel c0, RGBPixel c1, RGBPixel c2, int x, int y) {
-
-    //get Barycentric Coordinates for current point
+RGBPixel mixColor(const Vector2i& p0, const Vector2i& p1, const Vector2i& p2, const RGBPixel& c0, const RGBPixel& c1, const RGBPixel& c2, int x, int y) {
     Vector3f bary = getBarycentricCoordiantes(p0, p1, p2, x,y);
-
-
-    //micColors according  to coordinated
-
-
-    return RGBPixel();
+    return c0*bary.x()+c1*bary.y()+c2*bary.z();
 }
 
 
-
-void triangle(Vector2i p0, Vector2i p1, Vector2i p2, RGBPixel c0,RGBPixel c1,RGBPixel c2) {
+//TODO? maybe make this work with clipping when you are bored :)
+void triangle(const Vector2i& p0, const Vector2i& p1, const Vector2i& p2, const RGBPixel& c0,const RGBPixel& c1, const RGBPixel& c2) {
 
 	const int x0 = p0.x();
 	const int y0 = p0.y();
@@ -478,7 +471,7 @@ void triangle(Vector2i p0, Vector2i p1, Vector2i p2, RGBPixel c0,RGBPixel c1,RGB
 		for (int x = xmin; x <= xmax; x++) {
 			if (ff0 >= 0 && ff1 >= 0 && ff2 >= 0){
                 RGBPixel mixed = mixColor( p0, p1, p2,c0, c1, c2, x, y);
-                setPixel(x, y, mixed.R, mixed.G, mixed.B);
+                setPixel(x, y, mixed.x(), mixed.y(), mixed.z());
             }
 			ff0 = ff0 + (y0 - y1);
 			ff1 = ff1 + (y1 - y2);
@@ -492,11 +485,11 @@ void triangle(Vector2i p0, Vector2i p1, Vector2i p2, RGBPixel c0,RGBPixel c1,RGB
 
 
 
-void triangle(Vector2i p0, Vector2i p1, Vector2i p2, GLfloat r, GLfloat g, GLfloat b) {
+void triangle(const Vector2i& p0, const Vector2i& p1, const Vector2i& p2, GLfloat r, GLfloat g, GLfloat b) {
     triangle(p0, p1, p2, RGBPixel(r,g,b), RGBPixel(r,g,b), RGBPixel(r,g,b));
 }
 
-void triangle(Vector3i p0, Vector3i p1, Vector3i p2, GLfloat r, GLfloat g, GLfloat b) {
+void triangle(const Vector3i& p0, const Vector3i& p1, const Vector3i& p2, GLfloat r, GLfloat g, GLfloat b) {
     triangle(toCartesianCoordinate(p0),toCartesianCoordinate(p1),toCartesianCoordinate(p2),r,g,b);
 }
 bool compareActiveEdge(const ActiveEdge& a, const ActiveEdge& b) {
