@@ -31,6 +31,19 @@ struct ActiveEdge {
 	ActiveEdge(float xs = 0, float dx = 0, int ymax = 0) : xs(xs), dx(dx), ymax(ymax) {}
 };
 
+struct Obj{
+    //v
+    vector<Vector3f> verts = {};
+    //vt
+    vector<Vector2f> vertTex= {};
+    //vn
+    vector<Vector3f> vertNormals= {};
+    //f
+    vector<vector<Vector3i>> trigs= {};
+
+
+    Obj() = default;
+};
 
 
 const int RESOLUTION = 800;

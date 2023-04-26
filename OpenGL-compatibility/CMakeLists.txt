@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 
 
-add_executable(FH_CG simple.cpp  )
+add_executable(FH_CG simple.cpp ../Raster2D/objloader.h)
 target_link_libraries(FH_CG -lfreeGLUT -lopengl32 )
 
 # Set the path to GLEW libraries

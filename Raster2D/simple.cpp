@@ -8,6 +8,7 @@
 #include "ppm.h"
 #include "transformation.h"
 #include "Transformer.h"
+#include "objloader.h"
 #include <cmath>
 
 #include <string>
