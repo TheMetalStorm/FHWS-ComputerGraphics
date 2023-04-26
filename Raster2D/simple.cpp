@@ -158,13 +158,13 @@ void KeyPress(unsigned char key, int x, int y) {
         //b
 //        triangle({100, 100}, {300, 300}, {50, 500}, {0,0,1}, {0,1,0}, {1,0,0});
         //c
-        	polygon(trig, 0, 0, 1);
-    polygon(trig2, 1, 0, 1);
+//        	polygon(trig, 0, 0, 1);
+//    polygon(trig2, 1, 0, 1);
 
     vector<Vector3i> bigPoints =
             Transformer(toHomogeneousCoordinates(points))
                     .setModelMiddleAsAverageVector()
-                    .scale(1,1)
+                    .scale(1,2)
                     .transform();
 
     polygon(bigPoints, 1, 1, 1);
@@ -176,13 +176,13 @@ void KeyPress(unsigned char key, int x, int y) {
 //    vector<Vector3i> transformedPoints =
 //            Transformer(pointsh)
 //                    .setModelMiddleAsAverageVector()
-//                    .shear(.1, .10)
+////                    .shear(.1, .10)
 ////                    .scale(2,2)
 ////                    .rotate(45.0f * M_PI / 180.0f)
 //
 //                    .transform();
-
-
+//
+//
 //    polygon(transformedPoints, 0,0,1);
 
 
@@ -225,6 +225,7 @@ void KeyPress(unsigned char key, int x, int y) {
 //    triangle(trigtransformed[0],trigtransformed[1],trigtransformed[2], 0,1,0);
 //
 //    setPixel(400,400,0,0,1);
+lineWu(Vector2i(250, 250), Vector2i(500, 400), 1,0,0);
     framebufferToPPM(framebuffer, "pythagoras");
 
 /////////////////////////////////

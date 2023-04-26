@@ -76,7 +76,7 @@ void ChangeSize(GLsizei width, GLsizei height)
 }
 ///////////////////////////////////////////////////////////
 // Setup the rendering state
-void SetupRC(void)
+void SetupRC()
 {
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 }
@@ -90,14 +90,14 @@ void TimerFunction(int value)
     x += xstep;
     y += ystep;
 
-    float rotationFactor = 0.5f;
+    float rotationFactor = 5.0f;
     angle += rotationFactor;
-    angle = fmod(angle, 360);
+//    angle = fmod(angle, 360);
 
     if (scale > 2   || scale<0) {
        scaleFactor = -scaleFactor;
     }
-        scale += scaleFactor;
+    scale += scaleFactor;
 
     glutPostRedisplay();
     glutTimerFunc(33,TimerFunction,1);
