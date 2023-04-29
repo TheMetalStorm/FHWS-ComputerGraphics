@@ -15,7 +15,7 @@ void drawMovingRectTranslateRotateScale(float x, float y);
 #include "glm/gtx/transform.hpp"
 
 #include "simple.h"
-#include "objloader.h"
+#include "Obj.h"
 #include <math.h>
 #include <iostream>
 
@@ -31,14 +31,14 @@ float scaleFactor = 0.05;
 GLfloat xstep = 0.03f;
 GLfloat ystep = 0.02f;
 
-Obj cubeModel ={};
+Obj cubeModel = Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)");
 GLuint prg;
 ///////////////////////////////////////////////////////////
 // Called to draw scene
 void RenderScene(void)
 {
 	// Clear the window with current clearing color
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT);
     //a
@@ -57,7 +57,8 @@ void RenderScene(void)
     glUniformMatrix4fv(rotationUniformLocation, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
 
     //FIXME: falls wir weniger indices haben (keine vt/vn), funktioniert cubeModels.indices.size/3 nicht mehr
-    glDrawArrays(GL_TRIANGLES, 0, cubeModel.indices.size()/3);
+    glDrawArrays(GL_TRIANGLES, 0, cubeModel.getIndicesCount()/3);
+    cout<<cubeModel.getIndicesCount() << endl;
     // Flush drawing commands
     glFlush();
 }
@@ -141,13 +142,9 @@ void SetupRC()
     glLinkProgram(prg);
     glUseProgram(prg);
 
-    cubeModel = loadFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)");
-    GLuint vbo = 0, vao = 0;
+    auto* vertexData = cubeModel.getVertexDataFromModel();
 
-    //
-    const auto vertexDataPoints = cubeModel.indices.size() * ( 2 + 3);
-    auto* vertexData = new float[vertexDataPoints];
-    getVertexDataFromModel(&cubeModel, vertexData);
+    GLuint vbo = 0, vao = 0;
 
 // Draw the object
 
@@ -155,7 +152,7 @@ void SetupRC()
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vertexDataPoints, vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*cubeModel.getIndicesCount() * ( 2 + 3), vertexData, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0); // siehe Shader: „location 0“
     glEnableVertexAttribArray(1);

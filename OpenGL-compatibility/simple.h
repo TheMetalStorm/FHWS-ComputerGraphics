@@ -33,21 +33,6 @@ struct ActiveEdge {
 	ActiveEdge(float xs = 0, float dx = 0, int ymax = 0) : xs(xs), dx(dx), ymax(ymax) {}
 };
 
-struct Obj{
-    //v
-    vector<glm::vec3> verts = {};
-    //vt
-    vector<glm::vec2> vertTex= {};
-    //vn
-    vector<glm::vec3> vertNormals= {};
-    //f
-//    vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-    vector<unsigned int> indices;
-
-
-    Obj() = default;
-};
-
 
 const int RESOLUTION = 800;
 
