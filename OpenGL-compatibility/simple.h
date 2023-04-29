@@ -41,7 +41,8 @@ struct Obj{
     //vn
     vector<glm::vec3> vertNormals= {};
     //f
-    vector< unsigned int > vertexIndices, uvIndices, normalIndices;
+//    vector< unsigned int > vertexIndices, uvIndices, normalIndices;
+    vector<unsigned int> indices;
 
 
     Obj() = default;

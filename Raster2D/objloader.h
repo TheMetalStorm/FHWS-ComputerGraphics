@@ -9,15 +9,16 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-string eatToDelim(string *line, char c);
-string eatToSpace(string *line);
 
 using namespace std;
 
-Obj loadFile(){
+string eatToDelim(string *line, char c);
+string eatToSpace(string *line);
+
+Obj loadFile(string filename){
     Obj res = {};
     string line;
-    ifstream myfile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)");
+    ifstream myfile(filename);
 
 
     if (myfile.is_open()) {
@@ -44,18 +45,26 @@ Obj loadFile(){
                 }
                 else if(type == "f"){
                     string firstTrig = eatToSpace(&line);
-                    int x0 = stoi(eatToDelim(&firstTrig, '/'));
-                    int y0 = stoi(eatToDelim(&firstTrig, '/'));
-                    int z0 = stoi(eatToDelim(&firstTrig, '/'));
+                    int vert = stoi(eatToDelim(&firstTrig, '/'));
+                    int uv = stoi(eatToDelim(&firstTrig, '/'));
+                    int norm = stoi(eatToDelim(&firstTrig, '/'));
+                    res.vertexIndices.emplace_back(vert);
+                    res.uvIndices.emplace_back(uv);
+                    res.normalIndices.emplace_back(norm);
                     string secondTrig = eatToSpace(&line);
-                    int x1 = stoi(eatToDelim(&secondTrig, '/'));
-                    int y1 = stoi(eatToDelim(&secondTrig, '/'));
-                    int z1 = stoi(eatToDelim(&secondTrig, '/'));
+                    vert = stoi(eatToDelim(&secondTrig, '/'));
+                    uv = stoi(eatToDelim(&secondTrig, '/'));
+                    norm = stoi(eatToDelim(&secondTrig, '/'));
+                    res.vertexIndices.emplace_back(vert);
+                    res.uvIndices.emplace_back(uv);
+                    res.normalIndices.emplace_back(norm);
                     string thirdTrig = eatToSpace(&line);
-                    int x2 = stoi(eatToDelim(&thirdTrig, '/'));
-                    int y2 = stoi(eatToDelim(&thirdTrig, '/'));
-                    int z2 = stoi(eatToDelim(&thirdTrig, '/'));
-                    res.trigs.emplace_back(vector<Vector3i>{{x0, y0, z0}, {x1, y1, z1}, {x2, y2, z2}});
+                    vert = stoi(eatToDelim(&thirdTrig, '/'));
+                    uv = stoi(eatToDelim(&thirdTrig, '/'));
+                    norm = stoi(eatToDelim(&thirdTrig, '/'));
+                    res.vertexIndices.emplace_back(vert);
+                    res.uvIndices.emplace_back(uv);
+                    res.normalIndices.emplace_back(norm);
                 }
 
             }
@@ -88,8 +97,6 @@ string eatToDelim(string *line, char c) {
 }
 
 string eatToSpace(string *line) {
-
     return eatToDelim(line, ' ');
-
 }
 #endif //FH_CG_OBJLOADER_H

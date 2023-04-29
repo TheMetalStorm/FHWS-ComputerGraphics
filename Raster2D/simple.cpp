@@ -69,6 +69,8 @@ void KeyPress(unsigned char key, int x, int y) {
 // Main program entry point
     int main(int argc, char *argv[]) {
 
+        Obj obj = loadFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)");
+        exit(0);
 
         glutInit(&argc, argv);
         glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
