@@ -32,9 +32,9 @@ GLfloat xstep = 0.03f;
 GLfloat ystep = 0.02f;
 
 bool drawCube = true;
+vector<Obj*> models = {};
 
-Obj cubeModel = Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)");
-Obj sphereModel = Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)");
+int currentModelIndex = 0;
 
 GLuint prg;
 ///////////////////////////////////////////////////////////
@@ -60,13 +60,7 @@ void RenderScene(void)
     GLint rotationUniformLocation = glGetUniformLocation(prg, "rotation");
     glUniformMatrix4fv(rotationUniformLocation, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
 
-    if(drawCube){
-        cubeModel.render();
-        glDrawArrays(GL_TRIANGLES, 0, cubeModel.getVertexCount());
-    } else {
-        sphereModel.render();
-        glDrawArrays(GL_TRIANGLES, 0, sphereModel.getVertexCount());
-    }
+    models[currentModelIndex]->render(false);
 
     // Flush drawing commands
     glFlush();
@@ -133,11 +127,11 @@ void SetupRC()
                                         "out vec4 fragColor;\n"
                                         "void main()\n"
                                         "{\n"
-                                        "    fragColor = vec4(0.5 + 0.5 * gl_FragCoord.xyz, 1.0);\n"
+                                        "    fragColor = vec4(0.5 + 0.5 * Normal, 1.0);\n"
                                         "}\n\0";
 
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-    unsigned int fragmentShaderOrange = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
+    GLuint fragmentShaderOrange = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
     prg = glCreateProgram();
 
     glShaderSource(vs, 1, &vShader, nullptr);
@@ -151,12 +145,15 @@ void SetupRC()
     glLinkProgram(prg);
     glUseProgram(prg);
 
+    models.push_back(new Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)"));
+    models.push_back(new Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)"));
+    models.push_back(new Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)"));
+
+    for (const auto &item: models){
+        item->init();
+    }
 
 
-
-    cubeModel.render();
-
-//    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }
 
@@ -193,17 +190,20 @@ void KeyboardFunc(unsigned char key, int x, int y) {
     else if(key == 's')
         angleX -= angleChangeSpeed;
 
-    if (key == 'b')
-        drawCube = !drawCube;
+    //space
+    if (key == 32)
+        currentModelIndex = ++currentModelIndex % models.size();
+
     glutPostRedisplay();
 
 
 }
-
 ///////////////////////////////////////////////////////////
 // Main program entry point
 int main(int argc, char* argv[])
 {
+
+
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
@@ -216,7 +216,9 @@ int main(int argc, char* argv[])
 	SetupRC();
 
 	glutMainLoop();
-
+    for (const auto &item: models){
+        delete item;
+    }
     return 0;
 }
 

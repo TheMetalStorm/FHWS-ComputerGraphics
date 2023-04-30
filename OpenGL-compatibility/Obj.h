@@ -22,12 +22,18 @@ public:
         this->loadFile(std::move(filename));
     }
 
-    float  *getVertexDataFromModel() ;
+    ~Obj(){
+        if(vertexData){
+            delete[] vertexData;
+        }
+
+    }
 
     int getIndicesCount();
     int getVertexCount();
+    void init();
 
-    void render();
+    void render(bool drawPolygon);
 
 private:
     string eatToDelim(string *line, char c);
@@ -44,7 +50,10 @@ private:
     vector<glm::vec3> vertNormals= {};
     //f
     vector<unsigned int> indices = {};
+    float * generateVertexDataFromModel() ;
+    float *vertexData;
 
+    GLuint vbo, vao = 0;
 
 };
 #endif //FH_CG_OBJ_H

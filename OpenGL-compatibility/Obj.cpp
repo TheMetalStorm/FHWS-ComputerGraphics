@@ -125,9 +125,9 @@ int Obj::getVertexCount(){
 }
 
 
-float *Obj::getVertexDataFromModel() {
+float *Obj::generateVertexDataFromModel() {
     const auto vertexDataPoints = getVertexCount()  * (3 + 2 + 3);
-    auto* vertexData = new float[vertexDataPoints];
+    float *vertexData = new float[vertexDataPoints];
 
     int index = 0;
     for (int i = 0; i < indices.size(); i++) {
@@ -157,19 +157,18 @@ float *Obj::getVertexDataFromModel() {
         vertexData[index] = vertNormals[indices[i] - 1].z;
         index++;
     }
-
     return vertexData;
 }
 
-void Obj::render() {
-
-    GLuint vbo = 0, vao = 0;
-    auto* vertexData = getVertexDataFromModel();
+void Obj::init()
+{
+    vertexData = generateVertexDataFromModel();
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)* getVertexCount() * (3+ 2 + 3), vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT)* getVertexCount() * (3+ 2 + 3), vertexData, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0); // siehe Shader: „location 0“
     glEnableVertexAttribArray(1);
@@ -181,9 +180,25 @@ void Obj::render() {
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8,
                           (const GLvoid*)(sizeof(GLfloat)*5));
 
-    glEnable(GL_CULL_FACE);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glFrontFace(GL_CCW);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+void Obj::render(bool drawPolygon) {
 
-    delete[] vertexData;
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glEnable(GL_CULL_FACE);
+
+    if(drawPolygon){
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+    else{
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+    glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
