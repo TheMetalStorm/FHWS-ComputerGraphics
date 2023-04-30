@@ -11,6 +11,7 @@
 #include <string>
 #include <utility>
 
+#include "glm/geometric.hpp"
 using namespace std;
 
 class Obj {
@@ -25,6 +26,8 @@ public:
 
     int getIndicesCount();
     int getVertexCount();
+
+    void render();
 
 private:
     string eatToDelim(string *line, char c);

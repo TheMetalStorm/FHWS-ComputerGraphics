@@ -71,10 +71,37 @@ void Obj::loadFile(string filename) {
                         indices.emplace_back(uv);
                         indices.emplace_back(norm);
                     } else {
-                        //TODO
                         int vert1 = stoi(eatToSpace(&line));
                         int vert2 = stoi(eatToSpace(&line));
                         int vert3 = stoi(eatToSpace(&line));
+
+                        glm::vec3 a = verts[vert1-1];
+                        glm::vec3 b = verts[vert2-1];
+                        glm::vec3 c = verts[vert3-1];
+
+                        glm::vec3 ab = b-a;
+                        glm::vec3 ac = c-a;
+
+                        //for normals in other dir: switch ab and ac in cross func
+                        glm::vec3 trigNormal = glm::cross(ab,ac);
+                        vertNormals.emplace_back(trigNormal / glm::length(trigNormal));
+                        int normalIndex = vertNormals.size();
+
+                        //dummy uv:
+                        vertTex.emplace_back(0,0);
+                        int uvIndex = vertNormals.size();
+
+                        indices.emplace_back(vert1);
+                        indices.emplace_back(normalIndex);
+                        indices.emplace_back(uvIndex);
+
+                        indices.emplace_back(vert2);
+                        indices.emplace_back(normalIndex);
+                        indices.emplace_back(uvIndex);
+
+                        indices.emplace_back(vert3);
+                        indices.emplace_back(normalIndex);
+                        indices.emplace_back(uvIndex);
                     }
                     //TODO: change if we laod f with more values
                     vertexCount+=3;
@@ -132,4 +159,31 @@ float *Obj::getVertexDataFromModel() {
     }
 
     return vertexData;
+}
+
+void Obj::render() {
+
+    GLuint vbo = 0, vao = 0;
+    auto* vertexData = getVertexDataFromModel();
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float)* getVertexCount() * (3+ 2 + 3), vertexData, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0); // siehe Shader: „location 0“
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, nullptr);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8,
+                          (const GLvoid*)(sizeof(GLfloat)*3));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8,
+                          (const GLvoid*)(sizeof(GLfloat)*5));
+
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    delete[] vertexData;
 }

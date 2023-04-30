@@ -31,7 +31,11 @@ float scaleFactor = 0.05;
 GLfloat xstep = 0.03f;
 GLfloat ystep = 0.02f;
 
+bool drawCube = true;
+
 Obj cubeModel = Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)");
+Obj sphereModel = Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)");
+
 GLuint prg;
 ///////////////////////////////////////////////////////////
 // Called to draw scene
@@ -56,7 +60,14 @@ void RenderScene(void)
     GLint rotationUniformLocation = glGetUniformLocation(prg, "rotation");
     glUniformMatrix4fv(rotationUniformLocation, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
 
-    glDrawArrays(GL_TRIANGLES, 0, cubeModel.getVertexCount());
+    if(drawCube){
+        cubeModel.render();
+        glDrawArrays(GL_TRIANGLES, 0, cubeModel.getVertexCount());
+    } else {
+        sphereModel.render();
+        glDrawArrays(GL_TRIANGLES, 0, sphereModel.getVertexCount());
+    }
+
     // Flush drawing commands
     glFlush();
 }
@@ -140,33 +151,11 @@ void SetupRC()
     glLinkProgram(prg);
     glUseProgram(prg);
 
-    auto* vertexData = cubeModel.getVertexDataFromModel();
 
-    GLuint vbo = 0, vao = 0;
 
-// Draw the object
 
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*cubeModel.getVertexCount() * (3+ 2 + 3), vertexData, GL_STATIC_DRAW);
+    cubeModel.render();
 
-    glEnableVertexAttribArray(0); // siehe Shader: „location 0“
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, nullptr);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8,
-                          (const GLvoid*)(sizeof(GLfloat)*3));
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8,
-                          (const GLvoid*)(sizeof(GLfloat)*5));
-
-    glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    delete[] vertexData;
 //    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }
@@ -204,6 +193,8 @@ void KeyboardFunc(unsigned char key, int x, int y) {
     else if(key == 's')
         angleX -= angleChangeSpeed;
 
+    if (key == 'b')
+        drawCube = !drawCube;
     glutPostRedisplay();
 
 
