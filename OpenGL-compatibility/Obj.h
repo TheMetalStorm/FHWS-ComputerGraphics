@@ -30,7 +30,7 @@ public:
     }
 
     int getIndicesCount();
-    int getVertexCount();
+    int getVertexCount() const;
     void init();
 
     void render(bool drawPolygon);

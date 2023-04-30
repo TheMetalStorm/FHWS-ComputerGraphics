@@ -120,14 +120,14 @@ int Obj::getIndicesCount(){
     return indices.size();
 }
 
-int Obj::getVertexCount(){
+int Obj::getVertexCount() const{
     return vertexCount;
 }
 
 
 float *Obj::generateVertexDataFromModel() {
     const auto vertexDataPoints = getVertexCount()  * (3 + 2 + 3);
-    float *vertexData = new float[vertexDataPoints];
+    auto *vertexData = new float[vertexDataPoints];
 
     int index = 0;
     for (int i = 0; i < indices.size(); i++) {

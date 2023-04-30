@@ -60,6 +60,7 @@ void RenderScene(void)
     GLint rotationUniformLocation = glGetUniformLocation(prg, "rotation");
     glUniformMatrix4fv(rotationUniformLocation, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
 
+
     models[currentModelIndex]->render(false);
 
     // Flush drawing commands
