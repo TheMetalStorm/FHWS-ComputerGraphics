@@ -24,12 +24,15 @@ public:
     float  *getVertexDataFromModel() ;
 
     int getIndicesCount();
+    int getVertexCount();
+
 private:
     string eatToDelim(string *line, char c);
     string eatToSpace(string *line);
 
     void loadFile(string filename);
     int indicesCount = 0;
+    int vertexCount = 0;
     //v
     vector<glm::vec3> verts = {};
     //vt
@@ -38,7 +41,6 @@ private:
     vector<glm::vec3> vertNormals= {};
     //f
     vector<unsigned int> indices = {};
-
 
 
 };

@@ -56,9 +56,7 @@ void RenderScene(void)
     GLint rotationUniformLocation = glGetUniformLocation(prg, "rotation");
     glUniformMatrix4fv(rotationUniformLocation, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
 
-    //FIXME: falls wir weniger indices haben (keine vt/vn), funktioniert cubeModels.indices.size/3 nicht mehr
-    glDrawArrays(GL_TRIANGLES, 0, cubeModel.getIndicesCount()/3);
-    cout<<cubeModel.getIndicesCount() << endl;
+    glDrawArrays(GL_TRIANGLES, 0, cubeModel.getVertexCount());
     // Flush drawing commands
     glFlush();
 }
@@ -152,7 +150,7 @@ void SetupRC()
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*cubeModel.getIndicesCount() * ( 2 + 3), vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*cubeModel.getVertexCount() * (3+ 2 + 3), vertexData, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0); // siehe Shader: „location 0“
     glEnableVertexAttribArray(1);
@@ -166,7 +164,7 @@ void SetupRC()
 
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     delete[] vertexData;
 //    glBindBuffer(GL_ARRAY_BUFFER, 0);

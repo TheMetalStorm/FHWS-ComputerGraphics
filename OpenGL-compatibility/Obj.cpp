@@ -23,6 +23,7 @@ string Obj::eatToSpace(string *line) {
     return eatToDelim(line, ' ');
 }
 
+//TODO?: Maybe rewrite mit sscanf
 void Obj::loadFile(string filename) {
     string line;
     ifstream myfile(filename);
@@ -75,6 +76,8 @@ void Obj::loadFile(string filename) {
                         int vert2 = stoi(eatToSpace(&line));
                         int vert3 = stoi(eatToSpace(&line));
                     }
+                    //TODO: change if we laod f with more values
+                    vertexCount+=3;
                 }
 
             }
@@ -90,10 +93,13 @@ int Obj::getIndicesCount(){
     return indices.size();
 }
 
+int Obj::getVertexCount(){
+    return vertexCount;
+}
+
 
 float *Obj::getVertexDataFromModel() {
-    //FIXME: could give problems when we read in less indices
-    const auto vertexDataPoints = indices.size() * ( 2 + 3);
+    const auto vertexDataPoints = getVertexCount()  * (3 + 2 + 3);
     auto* vertexData = new float[vertexDataPoints];
 
     int index = 0;
