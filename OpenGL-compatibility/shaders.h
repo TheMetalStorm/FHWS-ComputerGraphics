@@ -14,12 +14,15 @@ const char* vShader  = "#version 330\n"
                          "out vec3 Normal;\n"
                          "\n"
                          "uniform mat4 rotation;\n"
-                         "\n"
+                           "uniform mat4 scale;\n"
+                       "uniform mat4 transform;\n"
+
+                       "\n"
                          ""
                          "void main()\n"
                          "{\n"
                          "    Normal = normal;\n  "
-                         "    gl_Position = rotation * vec4(vert, 1.0);\n"
+                         "    gl_Position = transform * rotation * scale * vec4(vert, 1.0);\n"
                          "}";
 
 const char *fragmentShader1Source = "#version 330 core\n"

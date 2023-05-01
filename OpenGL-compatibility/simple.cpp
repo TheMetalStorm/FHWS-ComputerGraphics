@@ -19,14 +19,15 @@ void drawMovingRectTranslateRotateScale(float x, float y);
 #include "Mesh.h"
 #include "shaders.h"
 
-GLfloat x = 0.0f;
-GLfloat y = 0.0f;
+GLfloat xTranslation = 0.0f;
+GLfloat yTranslation = 0.0f;
+GLfloat translationFactor = .2f;
 GLfloat angleX = 0.0f;
-GLfloat angleZ = 0.0f;
+GLfloat angleY = 0.0f;
 GLfloat angleChangeSpeed = 5;
-GLfloat scale = 0.0f;
+GLfloat scale = 3.0f;
 
-float scaleFactor = 0.05;
+float scaleFactor = 0.2;
 
 GLfloat xstep = 0.03f;
 GLfloat ystep = 0.02f;
@@ -54,12 +55,25 @@ void RenderScene(void)
     //d
 //    drawMovingRectTranslateRotateScale( x,  y);
 
+
+
+
     GLfloat rotationAngle = angleX;
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(angleX), glm::vec3(1.0f, 0.0f, 0.0f));
-    rotationMatrix *= glm::rotate(glm::mat4(1.0f), glm::radians(angleZ), glm::vec3(0.0f, 0.0f, 1.0f));
+    rotationMatrix *= glm::rotate(glm::mat4(1.0f), glm::radians(angleY), glm::vec3(0.0f, 1.0f, 0.0f));
     GLint rotationUniformLocation = glGetUniformLocation(prg, "rotation");
     glUniformMatrix4fv(rotationUniformLocation, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
 
+    glm::mat4 scaleMatrix = glm::scale(glm::vec3(scale,scale,scale));
+    GLint scaleUniformLocation = glGetUniformLocation(prg, "scale");
+    glUniformMatrix4fv(scaleUniformLocation, 1, GL_FALSE, glm::value_ptr(scaleMatrix));
+
+    glm::mat4 transformMatrix = glm::translate(glm::vec3(xTranslation, yTranslation, 0));
+    GLint transformUniformLocation = glGetUniformLocation(prg, "transform");
+    glUniformMatrix4fv(transformUniformLocation, 1, GL_FALSE, glm::value_ptr(transformMatrix));
+//6.1
+//    glutWireTeapot(.5f);
+//6.3
     models[currentModelIndex]->render(false);
 
     // Flush drawing commands
@@ -135,12 +149,12 @@ void SetupRC()
 
 void TimerFunction(int value)
 {
-    if(x > 1 - 0.25 || x < -1+0.25)
+    if(xTranslation > 1 - 0.25 || xTranslation < -1+0.25)
         xstep = -xstep;
-    if(y > 1 - 0.25 || y < -1+0.25)
+    if(yTranslation > 1 - 0.25 || yTranslation < -1 + 0.25)
         ystep = -ystep;
-    x += xstep;
-    y += ystep;
+    xTranslation += xstep;
+    yTranslation += ystep;
 
     float rotationFactor = 5.0f;
     angleX += rotationFactor;
@@ -154,13 +168,26 @@ void TimerFunction(int value)
     glutPostRedisplay();
     glutTimerFunc(33,TimerFunction,1);
 }
+void SpecialKeyboardFunc(int key, int x, int y) {
+    if (key == GLUT_KEY_LEFT)
+        xTranslation+= translationFactor;
+    else if(key == GLUT_KEY_RIGHT )
+        xTranslation-= translationFactor;
+    else if (key == GLUT_KEY_UP)
+        yTranslation-= translationFactor;
+    else if(key == GLUT_KEY_DOWN )
+        yTranslation+= translationFactor;
+
+    glutPostRedisplay();
+
+}
 
 void KeyboardFunc(unsigned char key, int x, int y) {
 
     if (key == 'd')
-        angleZ += angleChangeSpeed;
+        angleY += angleChangeSpeed;
     else if(key == 'a')
-        angleZ -= angleChangeSpeed;
+        angleY -= angleChangeSpeed;
     if (key == 'w')
         angleX += angleChangeSpeed;
     else if(key == 's')
@@ -174,6 +201,32 @@ void KeyboardFunc(unsigned char key, int x, int y) {
 
 
 }
+
+void mouseFunc(int button, int state, int x, int y)
+{
+    if (state == GLUT_DOWN) {
+        switch (button) {
+
+            case 3:  //mouse wheel scrolls
+                scale+=scaleFactor;
+                cout <<"up"<< endl;
+                break;
+            case 4:
+                if (scale > 0.2) {
+                    scale-=scaleFactor;
+                    cout <<"down"<< endl;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+
+
+    glutPostRedisplay();
+}
+
 ///////////////////////////////////////////////////////////
 // Main program entry point
 int main(int argc, char* argv[])
@@ -185,12 +238,14 @@ int main(int argc, char* argv[])
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
  	glutCreateWindow("Simple");
 //    glutTimerFunc(33, TimerFunction, 1);
+    glutMouseFunc(mouseFunc);
+    glutSpecialFunc(SpecialKeyboardFunc);
+
     glutKeyboardFunc(KeyboardFunc);
     glutReshapeFunc(ChangeSize);
     glutDisplayFunc(RenderScene);
 
 	SetupRC();
-
 	glutMainLoop();
     for (const auto &item: models){
         delete item;

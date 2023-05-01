@@ -32,8 +32,8 @@ public:
     int getIndicesCount();
     int getVertexCount() const;
     void init();
-
     void render(bool drawPolygon);
+
 
 private:
     void loadFromObj(string filename);
