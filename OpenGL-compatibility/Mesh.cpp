@@ -1,9 +1,9 @@
 //
 // Created by arapo on 29.04.2023.
 //
-#include "Obj.h"
+#include "Mesh.h"
 
-string Obj::eatToDelim(string *line, char c) {
+string Mesh::eatToDelim(string *line, char c) {
 
     if (line->empty()) return "none";
 
@@ -19,12 +19,12 @@ string Obj::eatToDelim(string *line, char c) {
 
 }
 
-string Obj::eatToSpace(string *line) {
+string Mesh::eatToSpace(string *line) {
     return eatToDelim(line, ' ');
 }
 
 //TODO?: Maybe rewrite mit sscanf
-void Obj::loadFile(string filename) {
+void Mesh::loadFromObj(string filename) {
     string line;
     ifstream myfile(filename);
 
@@ -116,17 +116,17 @@ void Obj::loadFile(string filename) {
     }
 }
 
-int Obj::getIndicesCount(){
+int Mesh::getIndicesCount(){
     return indices.size();
 }
 
-int Obj::getVertexCount() const{
+int Mesh::getVertexCount() const{
     return vertexCount;
 }
 
 
-float *Obj::generateVertexDataFromModel() {
-    const auto vertexDataPoints = getVertexCount()  * (3 + 2 + 3);
+float *Mesh::generateVertexDataFromModel() {
+    const auto vertexDataPoints = getVertexCount()  * floatsPerVertex;
     auto *vertexData = new float[vertexDataPoints];
 
     int index = 0;
@@ -160,7 +160,7 @@ float *Obj::generateVertexDataFromModel() {
     return vertexData;
 }
 
-void Obj::init()
+void Mesh::init()
 {
     vertexData = generateVertexDataFromModel();
     glGenVertexArrays(1, &vao);
@@ -168,7 +168,7 @@ void Obj::init()
     glGenBuffers(1, &vbo);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT)* getVertexCount() * (3+ 2 + 3), vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT)* getVertexCount() * floatsPerVertex, vertexData, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0); // siehe Shader: „location 0“
     glEnableVertexAttribArray(1);
@@ -182,14 +182,14 @@ void Obj::init()
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glFrontFace(GL_CCW);
 }
-void Obj::render(bool drawPolygon) {
+void Mesh::render(bool drawPolygon) {
 
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
 
     if(drawPolygon){
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

@@ -1,5 +1,9 @@
 #pragma once
 #define GLUT_DISABLE_ATEXIT_HACK
+//for vs
+//#define FREEGLUT_STATIC
+//#define _LIB
+//#define FREEGLUT_LIB_PRAGMAS 0
 
 #include <Windows.h>		// Must have for Windows platform builds
 #include "GL/glew.h"

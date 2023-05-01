@@ -2,8 +2,8 @@
 // Created by arapo on 26.04.2023.
 //
 
-#ifndef FH_CG_OBJ_H
-#define FH_CG_OBJ_H
+#ifndef FH_CG_MESH_H
+#define FH_CG_MESH_H
 
 #include "simple.h"
 #include <iostream>
@@ -14,15 +14,15 @@
 #include "glm/geometric.hpp"
 using namespace std;
 
-class Obj {
+class Mesh {
 
 public:
 
-    explicit Obj(string filename) {     // Constructor
-        this->loadFile(std::move(filename));
+    explicit Mesh(string filename) {     // Constructor
+        this->loadFromObj(std::move(filename));
     }
 
-    ~Obj(){
+    ~Mesh(){
         if(vertexData){
             delete[] vertexData;
         }
@@ -36,12 +36,17 @@ public:
     void render(bool drawPolygon);
 
 private:
+    void loadFromObj(string filename);
     string eatToDelim(string *line, char c);
     string eatToSpace(string *line);
+    float * generateVertexDataFromModel() ;
 
-    void loadFile(string filename);
+    int floatsPerVertex = 3+2+3;
     int indicesCount = 0;
     int vertexCount = 0;
+    float *vertexData;
+    GLuint vbo, vao = 0;
+
     //v
     vector<glm::vec3> verts = {};
     //vt
@@ -50,10 +55,7 @@ private:
     vector<glm::vec3> vertNormals= {};
     //f
     vector<unsigned int> indices = {};
-    float * generateVertexDataFromModel() ;
-    float *vertexData;
 
-    GLuint vbo, vao = 0;
 
 };
-#endif //FH_CG_OBJ_H
+#endif //FH_CG_MESH_H

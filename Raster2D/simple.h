@@ -5,6 +5,11 @@
 #include "GL/glew.h"
 #include "GL/gl.h"
 #include "GL/glu.h"
+
+#define FREEGLUT_STATIC
+#define _LIB
+#define FREEGLUT_LIB_PRAGMAS 0
+
 #include "freeglut.h"			// Glut (Free-Glut on Windows)
 #include <cmath>
 #include <vector>

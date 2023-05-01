@@ -13,11 +13,11 @@ void drawMovingRectTranslateRotateScale(float x, float y);
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/transform.hpp"
-
-#include "simple.h"
-#include "Obj.h"
 #include <math.h>
 #include <iostream>
+#include "simple.h"
+#include "Mesh.h"
+#include "shaders.h"
 
 GLfloat x = 0.0f;
 GLfloat y = 0.0f;
@@ -32,7 +32,7 @@ GLfloat xstep = 0.03f;
 GLfloat ystep = 0.02f;
 
 bool drawCube = true;
-vector<Obj*> models = {};
+vector<Mesh*> models = {};
 
 int currentModelIndex = 0;
 
@@ -59,7 +59,6 @@ void RenderScene(void)
     rotationMatrix *= glm::rotate(glm::mat4(1.0f), glm::radians(angleZ), glm::vec3(0.0f, 0.0f, 1.0f));
     GLint rotationUniformLocation = glGetUniformLocation(prg, "rotation");
     glUniformMatrix4fv(rotationUniformLocation, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
-
 
     models[currentModelIndex]->render(false);
 
@@ -99,38 +98,17 @@ void ChangeSize(GLsizei width, GLsizei height)
         glViewport(0,0, width, width);
 }
 ///////////////////////////////////////////////////////////
-// Setup the rendering state
-void SetupRC()
-{
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-    GLenum err = glewInit();
+void setupModels(){
+    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)"));
+    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)"));
+    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)"));
 
+    for (const auto &item: models){
+        item->init();
+    }
+}
 
-    const GLchar* vShader  = "#version 330\n"
-                             "\n"
-                             "layout(location = 0)in vec3 vert;\n"
-                             "layout(location = 1)in vec2 uv;\n"
-                             "layout(location = 2)in vec3 normal;\n"
-                             "\n"
-                             "out vec3 Normal;\n"
-                             "\n"
-                             "uniform mat4 rotation;\n"
-                             "\n"
-                             ""
-                             "void main()\n"
-                             "{\n"
-                             "    Normal = normal;\n  "
-                             "    gl_Position = rotation * vec4(vert, 1.0);\n"
-                             "}";
-
-    const char *fragmentShader1Source = "#version 330 core\n"
-                                        "in vec3 Normal;\n"
-                                        "out vec4 fragColor;\n"
-                                        "void main()\n"
-                                        "{\n"
-                                        "    fragColor = vec4(0.5 + 0.5 * Normal, 1.0);\n"
-                                        "}\n\0";
-
+void setupShaders(){
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragmentShaderOrange = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
     prg = glCreateProgram();
@@ -145,17 +123,14 @@ void SetupRC()
 
     glLinkProgram(prg);
     glUseProgram(prg);
-
-    models.push_back(new Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)"));
-    models.push_back(new Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)"));
-    models.push_back(new Obj(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)"));
-
-    for (const auto &item: models){
-        item->init();
-    }
-
-
-
+}
+// Setup the rendering state
+void SetupRC()
+{
+    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    GLenum err = glewInit();
+    setupShaders();
+    setupModels();
 }
 
 void TimerFunction(int value)
