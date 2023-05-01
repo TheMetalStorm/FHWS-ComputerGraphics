@@ -183,7 +183,21 @@ void Mesh::init()
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-void Mesh::render(bool drawPolygon) {
+
+void Mesh::transform(unsigned int prg, glm::mat4x4 look, glm::mat4x4 proj) {
+
+    tblock.look = look;
+    tblock.proj = proj;
+    GLuint blockIndex = glGetUniformBlockIndex(prg, "TBlock");
+    GLuint uBuf;
+    glGenBuffers(1, &uBuf);
+    glBindBuffer(GL_UNIFORM_BUFFER, uBuf);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(tblock), &tblock, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, uBuf);
+}
+
+
+void Mesh::render(bool drawPolygon) const {
 
 
     glBindVertexArray(vao);

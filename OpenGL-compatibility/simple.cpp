@@ -21,7 +21,7 @@ void drawMovingRectTranslateRotateScale(float x, float y);
 
 GLfloat xTranslation = 0.0f;
 GLfloat yTranslation = 0.0f;
-GLfloat translationFactor = .2f;
+GLfloat translationFactor = .1f;
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
 GLfloat angleChangeSpeed = 5;
@@ -34,18 +34,19 @@ GLfloat ystep = 0.02f;
 
 bool drawCube = true;
 vector<Mesh*> models = {};
-
 int currentModelIndex = 0;
 
 GLuint prg;
+auto viewingMat =  glm::lookAt(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+auto projectionMat =  glm::ortho(0.f, 1.0f, 0.0f, 1.0f, -1.f, 50.0f);
 ///////////////////////////////////////////////////////////
 // Called to draw scene
 void RenderScene(void)
 {
 	// Clear the window with current clearing color
 //    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glClear(GL_COLOR_BUFFER_BIT);
     //a
 //    drawRect(0,0);
     //b
@@ -56,24 +57,28 @@ void RenderScene(void)
 //    drawMovingRectTranslateRotateScale( x,  y);
 
 
+    tblock tblock;
+    tblock.transform = glm::translate(glm::vec3(xTranslation, yTranslation, -2));
+    tblock.transform *=glm::rotate(glm::mat4(1.0f), glm::radians(angleX), glm::vec3(1.0f, 0.0f, 0.0f));
+    tblock.transform *=glm::rotate(glm::mat4(1.0f), glm::radians(angleY), glm::vec3(.0f, 1.0f, 0.0f));
+    tblock.transform *= glm::scale(glm::vec3(scale,scale,scale));
 
+    //6.1
 
-    GLfloat rotationAngle = angleX;
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(angleX), glm::vec3(1.0f, 0.0f, 0.0f));
-    rotationMatrix *= glm::rotate(glm::mat4(1.0f), glm::radians(angleY), glm::vec3(0.0f, 1.0f, 0.0f));
-    GLint rotationUniformLocation = glGetUniformLocation(prg, "rotation");
-    glUniformMatrix4fv(rotationUniformLocation, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
-
-    glm::mat4 scaleMatrix = glm::scale(glm::vec3(scale,scale,scale));
-    GLint scaleUniformLocation = glGetUniformLocation(prg, "scale");
-    glUniformMatrix4fv(scaleUniformLocation, 1, GL_FALSE, glm::value_ptr(scaleMatrix));
-
-    glm::mat4 transformMatrix = glm::translate(glm::vec3(xTranslation, yTranslation, 0));
-    GLint transformUniformLocation = glGetUniformLocation(prg, "transform");
-    glUniformMatrix4fv(transformUniformLocation, 1, GL_FALSE, glm::value_ptr(transformMatrix));
-//6.1
+//    tblock.look = viewingMat;
+//    tblock.proj = projectionMat;
+//    GLuint blockIndex = glGetUniformBlockIndex(prg, "TBlock");
+//    GLuint uBuf;
+//    glGenBuffers(1, &uBuf);
+//    glBindBuffer(GL_UNIFORM_BUFFER, uBuf);
+//    glBufferData(GL_UNIFORM_BUFFER, sizeof(tblock), &tblock, GL_DYNAMIC_DRAW);
+//    glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, uBuf);
+//    glutSolidTeapot(.5f);
 //    glutWireTeapot(.5f);
+
 //6.3
+    models[currentModelIndex]->tblock.transform = tblock.transform;
+    models[currentModelIndex]->transform(prg, viewingMat, projectionMat);
     models[currentModelIndex]->render(false);
 
     // Flush drawing commands
@@ -145,6 +150,8 @@ void SetupRC()
     GLenum err = glewInit();
     setupShaders();
     setupModels();
+    glEnable(GL_DEPTH_TEST);
+
 }
 
 void TimerFunction(int value)
@@ -170,14 +177,17 @@ void TimerFunction(int value)
 }
 void SpecialKeyboardFunc(int key, int x, int y) {
     if (key == GLUT_KEY_LEFT)
-        xTranslation+= translationFactor;
-    else if(key == GLUT_KEY_RIGHT )
         xTranslation-= translationFactor;
+    else if(key == GLUT_KEY_RIGHT )
+        xTranslation+= translationFactor;
     else if (key == GLUT_KEY_UP)
         yTranslation-= translationFactor;
     else if(key == GLUT_KEY_DOWN )
         yTranslation+= translationFactor;
 
+
+    cout <<xTranslation<< endl;
+    cout <<yTranslation<< endl;
     glutPostRedisplay();
 
 }
@@ -209,12 +219,10 @@ void mouseFunc(int button, int state, int x, int y)
 
             case 3:  //mouse wheel scrolls
                 scale+=scaleFactor;
-                cout <<"up"<< endl;
                 break;
             case 4:
                 if (scale > 0.2) {
                     scale-=scaleFactor;
-                    cout <<"down"<< endl;
                 }
                 break;
             default:

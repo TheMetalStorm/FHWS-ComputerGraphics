@@ -23,29 +23,26 @@ public:
     }
 
     ~Mesh(){
-        if(vertexData){
-            delete[] vertexData;
-        }
-
+        delete[] vertexData;
     }
 
     int getIndicesCount();
     int getVertexCount() const;
     void init();
-    void render(bool drawPolygon);
-
+    void transform(unsigned int prg, glm::mat4x4 look, glm::mat4x4 proj);
+    void render(bool drawPolygon) const;
+    tblock tblock{};
 
 private:
     void loadFromObj(string filename);
     string eatToDelim(string *line, char c);
     string eatToSpace(string *line);
     float * generateVertexDataFromModel() ;
-
     int floatsPerVertex = 3+2+3;
     int indicesCount = 0;
     int vertexCount = 0;
-    float *vertexData;
-    GLuint vbo, vao = 0;
+    float *vertexData{};
+    GLuint vbo = 0, vao = 0;
 
     //v
     vector<glm::vec3> verts = {};

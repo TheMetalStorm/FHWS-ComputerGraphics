@@ -15,6 +15,7 @@
 #include <Eigen/Dense>
 #include "glm/vec3.hpp"
 #include "glm/vec2.hpp"
+#include "glm/glm.hpp"
 
 using namespace std;
 using namespace Eigen;
@@ -37,6 +38,11 @@ struct ActiveEdge {
 	ActiveEdge(float xs = 0, float dx = 0, int ymax = 0) : xs(xs), dx(dx), ymax(ymax) {}
 };
 
+struct tblock{
+    glm::mat4 transform;
+    glm::mat4 look;
+    glm::mat4 proj;
+} ;
 
 const int RESOLUTION = 800;
 
