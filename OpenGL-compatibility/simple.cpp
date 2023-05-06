@@ -17,7 +17,6 @@ void drawMovingRectTranslateRotateScale(float x, float y);
 #include <iostream>
 #include "simple.h"
 #include "Mesh.h"
-#include "shaders.h"
 
 GLfloat xTranslation = 0.0f;
 GLfloat yTranslation = 0.0f;
@@ -39,6 +38,8 @@ int currentModelIndex = 0;
 GLuint prg;
 auto viewingMat =  glm::lookAt(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 auto projectionMat =  glm::ortho(0.f, 1.0f, 0.0f, 1.0f, -1.f, 50.0f);
+
+
 ///////////////////////////////////////////////////////////
 // Called to draw scene
 void RenderScene(void)
@@ -127,18 +128,42 @@ void setupModels(){
     }
 }
 
+std::string readShaderFile(const char *filePath) {
+    // no feedback is provided for stream errors / exceptions.
+
+    std::string content;
+    std::ifstream fileStream(filePath, std::ios::in);
+
+    if(!fileStream.is_open()) {
+        std::cerr << "Could not read file " << filePath << ". File does not exist." << std::endl;
+        return "";
+    }
+
+    std::string line = "";
+    while(!fileStream.eof()) {
+        std::getline(fileStream, line);
+        content.append(line + "\n");
+    }
+
+    fileStream.close();
+    return content;
+}
+
 void setupShaders(){
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fragmentShaderOrange = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
+    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
     prg = glCreateProgram();
 
+    const char* vShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\VisualizeNormals.vert)").c_str();
+    const char* fShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\VisualizeNormals.frag)").c_str();
     glShaderSource(vs, 1, &vShader, nullptr);
     glCompileShader(vs);
-    glShaderSource(fragmentShaderOrange, 1, &fragmentShader1Source, NULL);
-    glCompileShader(fragmentShaderOrange);
+    glShaderSource(fs, 1, &fShader, nullptr);
+    glCompileShader(fs);
+
 
     glAttachShader(prg, vs);
-    glAttachShader(prg, fragmentShaderOrange);
+    glAttachShader(prg, fs);
 
     glLinkProgram(prg);
     glUseProgram(prg);
