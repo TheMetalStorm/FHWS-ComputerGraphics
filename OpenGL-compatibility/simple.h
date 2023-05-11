@@ -44,6 +44,7 @@ struct tblock{
     glm::mat4 proj;
 } ;
 
+
 const int RESOLUTION = 800;
 
 void setPixel(int x, int y, GLfloat r, GLfloat g, GLfloat b);

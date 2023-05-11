@@ -38,7 +38,7 @@ private:
     string eatToDelim(string *line, char c);
     string eatToSpace(string *line);
     float * generateVertexDataFromModel() ;
-    int floatsPerVertex = 3+2+3;
+    const int floatsPerVertex = 3+2+3;
     int indicesCount = 0;
     int vertexCount = 0;
     float *vertexData{};

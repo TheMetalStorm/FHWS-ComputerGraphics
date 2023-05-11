@@ -3,6 +3,15 @@
 
 #define FREEGLUT_STATIC
 
+//#define TEAPOT
+#define MODEL
+
+#define PERSPECTIVE
+//#define ORTHO
+
+//#define ROBOT
+
+
 void drawRect(float x, float y);
 void drawMovingRectTranslate(float x, float y);
 void drawMovingRectTranslateRotateScale(float x, float y);
@@ -36,9 +45,114 @@ vector<Mesh*> models = {};
 int currentModelIndex = 0;
 
 GLuint prg;
-auto viewingMat =  glm::lookAt(glm::vec3(0, 0, -3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-auto projectionMat =  glm::ortho(0.f, 1.0f, 0.0f, 1.0f, -1.f, 50.0f);
 
+float screenWidth, screenHeight = 1.0f;
+void renderCube(float r, float g, float b) {
+
+    float frontColor[3] = {r, g, b};
+    float backColor[3] = {r * 0.8f, g * 0.8f, b * 0.8f};
+    float topColor[3] = {r * 0.6f, g * 0.6f, b * 0.6f};
+    float bottomColor[3] = {r * 0.4f, g * 0.4f, b * 0.4f};
+    float rightColor[3] = {r * 0.2f, g * 0.2f, b * 0.2f};
+    float leftColor[3] = {r * 0.1f, g * 0.1f, b * 0.1f};
+
+    // Draw the cube
+    glBegin(GL_QUADS);
+    // Front face
+    glColor3fv(frontColor);
+    glVertex3f(-1.0, -1.0, 1.0);
+    glVertex3f(1.0, -1.0, 1.0);
+    glVertex3f(1.0, 1.0, 1.0);
+    glVertex3f(-1.0, 1.0, 1.0);
+    // Back face
+    glColor3fv(backColor);
+
+    glVertex3f(-1.0, -1.0, -1.0);
+    glVertex3f(-1.0, 1.0, -1.0);
+    glVertex3f(1.0, 1.0, -1.0);
+    glVertex3f(1.0, -1.0, -1.0);
+    // Top face
+    glColor3fv(topColor);
+
+    glVertex3f(-1.0, 1.0, -1.0);
+    glVertex3f(-1.0, 1.0, 1.0);
+    glVertex3f(1.0, 1.0, 1.0);
+    glVertex3f(1.0, 1.0, -1.0);
+    // Bottom face
+    glColor3fv(bottomColor);
+    glVertex3f(-1.0, -1.0, -1.0);
+    glVertex3f(1.0, -1.0, -1.0);
+    glVertex3f(1.0, -1.0, 1.0);
+    glVertex3f(-1.0, -1.0, 1.0);
+    // Right face
+    glColor3fv(rightColor);
+
+    glVertex3f(1.0, -1.0, -1.0);
+    glVertex3f(1.0, 1.0, -1.0);
+    glVertex3f(1.0, 1.0, 1.0);
+    glVertex3f(1.0, -1.0, 1.0);
+    // Left face
+    glColor3fv(leftColor);
+
+    glVertex3f(-1.0, -1.0, -1.0);
+    glVertex3f(-1.0, -1.0, 1.0);
+    glVertex3f(-1.0, 1.0, 1.0);
+    glVertex3f(-1.0, 1.0, -1.0);
+    glEnd();
+    glFlush();
+}
+
+void drawDumbRobot(){
+    glMatrixMode(GL_MODELVIEW);
+
+    glLoadIdentity();
+    gluLookAt(0, 6, 15, 0, 0, 0, 0, 1, 0);
+
+    //Base
+    glTranslatef(xTranslation, yTranslation, 0);
+    glScalef(4,1,2);
+    renderCube(1,0,0);
+
+    glPushMatrix();
+
+    //UpperArm
+    glTranslatef(-.6f,2.5,0);
+    glScalef(.1,1.5f,.3);
+    renderCube(0,1,0);
+
+    //LowerArm
+    glTranslatef(0,1.3,0);
+    glRotatef(angleX, 0,1,0);
+    glScalef(4,.3,1);
+    glTranslatef(-.75f,0,0);
+    renderCube(0,1,1);
+
+    //Hand
+    glTranslatef(-1.25f,0,0);
+    glRotatef(angleY, 1,0,0);
+    glScalef(.25,2,1);
+    renderCube(1,1,0);
+
+    glPopMatrix();
+
+    //UpperArm
+    glTranslatef(.6f,2.5,0);
+    glScalef(.1,1.5f,.3);
+    renderCube(0,1,0);
+
+    //LowerArm
+    glTranslatef(0,1.3,0);
+    glRotatef(angleX, 0,1,0);
+    glScalef(4,.3,1);
+    glTranslatef(.75f,0,0);
+    renderCube(0,1,1);
+
+    //Hand
+    glTranslatef(1.25f,0,0);
+    glRotatef(angleY, 1,0,0);
+    glScalef(.25,2,1);
+    renderCube(1,1,0);
+}
 
 ///////////////////////////////////////////////////////////
 // Called to draw scene
@@ -56,34 +170,46 @@ void RenderScene(void)
 //    drawMovingRectTranslate(x, y);
     //d
 //    drawMovingRectTranslateRotateScale( x,  y);
+#if defined(MODEL) || defined(TEAPOT)
+    auto viewingMat =  glm::lookAt(glm::vec3(0, 0, -4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
-
+#if defined(ORTHO)
+    auto projectionMat =  glm::ortho(0.f, screenWidth/screenHeight, 0.0f, 1.0f, -1.f, 50.0f);
+#elif defined(PERSPECTIVE)
+    auto projectionMat = glm::perspective(30.0f, screenWidth/screenHeight, .1f, 300.0f);
+#endif
     tblock tblock;
     tblock.transform = glm::translate(glm::vec3(xTranslation, yTranslation, -2));
     tblock.transform *=glm::rotate(glm::mat4(1.0f), glm::radians(angleX), glm::vec3(1.0f, 0.0f, 0.0f));
     tblock.transform *=glm::rotate(glm::mat4(1.0f), glm::radians(angleY), glm::vec3(.0f, 1.0f, 0.0f));
     tblock.transform *= glm::scale(glm::vec3(scale,scale,scale));
+#endif
 
-    //6.1
-
-//    tblock.look = viewingMat;
-//    tblock.proj = projectionMat;
-//    GLuint blockIndex = glGetUniformBlockIndex(prg, "TBlock");
-//    GLuint uBuf;
-//    glGenBuffers(1, &uBuf);
-//    glBindBuffer(GL_UNIFORM_BUFFER, uBuf);
-//    glBufferData(GL_UNIFORM_BUFFER, sizeof(tblock), &tblock, GL_DYNAMIC_DRAW);
-//    glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, uBuf);
-//    glutSolidTeapot(.5f);
+#if defined(TEAPOT)
+    #if defined(PERSPECTIVE) || defined(ORTHO)
+    tblock.look = viewingMat;
+    #endif
+    tblock.proj = projectionMat;
+    GLuint blockIndex = glGetUniformBlockIndex(prg, "TBlock");
+    GLuint uBuf;
+    glGenBuffers(1, &uBuf);
+    glBindBuffer(GL_UNIFORM_BUFFER, uBuf);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(tblock), &tblock, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, blockIndex, uBuf);
+    glutSolidTeapot(.5f);
 //    glutWireTeapot(.5f);
+#endif
+#if defined(ROBOT)
+    drawDumbRobot();
+#endif
 
-//6.3
+#if defined(MODEL)
     models[currentModelIndex]->tblock.transform = tblock.transform;
     models[currentModelIndex]->transform(prg, viewingMat, projectionMat);
     models[currentModelIndex]->render(false);
+#endif
 
-    // Flush drawing commands
-    glFlush();
+    glutSwapBuffers();
 }
 
 void drawRect(float x, float y) {
@@ -110,12 +236,39 @@ void drawMovingRectTranslateRotateScale(float x, float y){
     glRectf(-0.25f, -0.25f, 0.25f, 0.25f);
 }
 
-void ChangeSize(GLsizei width, GLsizei height)
+void ChangeSizePerspective(GLsizei w, GLsizei h){
+
+// Set Viewport to window dimensions
+        glViewport(0, 0, w, h);
+        GLfloat fAspect = (GLfloat)w/(GLfloat)h;
+// Reset coordinate system
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+// Produce the perspective projection
+        gluPerspective(60.0f, fAspect, 1.0, 400.0);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+}
+
+void ChangeSize(GLsizei w, GLsizei h)
 {
-    if(width > height)
-        glViewport(0,0, height, height);
-    else
-        glViewport(0,0, width, width);
+//    glMatrixMode(GL_PROJECTION);
+//    glLoadIdentity();
+//    glViewport(0, 0, w, h);
+//    gluPerspective(40, (float) w / (float)h, 1, 100);
+//    projectionMat = glm::perspective(90.0f,  (GLfloat)w / (GLfloat)h, 1.0f, 300.0f);
+//    GLfloat projectionArray[16];
+//    memcpy(projectionArray, glm::value_ptr(projectionMat), sizeof(float) * 16);
+//    glMultMatrixf(projectionArray);
+//        if(w > h)
+        glViewport(0,0, w, h);
+        screenWidth = (float)w;
+        screenHeight = (float)h;
+//    projectionMat = glm::perspective(90.0f, (float)w/(float)h, 1.0f, 300.0f);
+
+//    else
+//        glViewport(0,0, w, w);
 }
 ///////////////////////////////////////////////////////////
 void setupModels(){
@@ -151,7 +304,7 @@ std::string readShaderFile(const char *filePath) {
 
 void setupShaders(){
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
+    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
     prg = glCreateProgram();
 
     const char* vShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\VisualizeNormals.vert)").c_str();
@@ -173,10 +326,13 @@ void SetupRC()
 {
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     GLenum err = glewInit();
-    setupShaders();
-    setupModels();
+    #if defined(MODEL) || defined(TEAPOT)
+        setupShaders();
+    #endif
+    #if defined(MODEL)
+        setupModels();
+    #endif
     glEnable(GL_DEPTH_TEST);
-
 }
 
 void TimerFunction(int value)
@@ -268,14 +424,19 @@ int main(int argc, char* argv[])
 
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
  	glutCreateWindow("Simple");
 //    glutTimerFunc(33, TimerFunction, 1);
     glutMouseFunc(mouseFunc);
     glutSpecialFunc(SpecialKeyboardFunc);
 
     glutKeyboardFunc(KeyboardFunc);
-    glutReshapeFunc(ChangeSize);
+
+    #if defined(MODEL)|| defined(TEAPOT)
+        glutReshapeFunc(ChangeSize);
+    #elif defined(ROBOT)
+        glutReshapeFunc(ChangeSizePerspective);
+    #endif
     glutDisplayFunc(RenderScene);
 
 	SetupRC();

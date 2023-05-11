@@ -11,6 +11,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 
 add_executable(FH_CG simple.cpp simple.h Mesh.h Mesh.cpp)
-target_link_libraries(FH_CG -lfreeGLUT -lopengl32 -lglew32)
+target_link_libraries(FH_CG -lfreeGLUT -lopengl32 -lglew32 -lglu32)
 
 # Set the path to GLEW libraries
