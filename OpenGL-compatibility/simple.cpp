@@ -3,6 +3,9 @@
 
 #define FREEGLUT_STATIC
 
+//#define SHADER_VIZ_NORMALS
+#define SHADER_TOON
+
 //#define TEAPOT
 #define MODEL
 
@@ -26,6 +29,8 @@ void drawMovingRectTranslateRotateScale(float x, float y);
 #include <iostream>
 #include "simple.h"
 #include "Mesh.h"
+#include <stdio.h>
+
 
 GLfloat xTranslation = 0.0f;
 GLfloat yTranslation = 0.0f;
@@ -47,6 +52,9 @@ int currentModelIndex = 0;
 GLuint prg;
 
 float screenWidth, screenHeight = 1.0f;
+glm::vec4 lightDirection = glm::normalize(glm::vec4(-2.0f, 0.0f, 0.0f, 1.0f));
+
+
 void renderCube(float r, float g, float b) {
 
     float frontColor[3] = {r, g, b};
@@ -179,7 +187,7 @@ void RenderScene(void)
     auto projectionMat = glm::perspective(30.0f, screenWidth/screenHeight, .1f, 300.0f);
 #endif
     tblock tblock;
-    tblock.transform = glm::translate(glm::vec3(xTranslation, yTranslation, -2));
+    tblock.transform = glm::translate(glm::vec3(xTranslation, yTranslation, 2));
     tblock.transform *=glm::rotate(glm::mat4(1.0f), glm::radians(angleX), glm::vec3(1.0f, 0.0f, 0.0f));
     tblock.transform *=glm::rotate(glm::mat4(1.0f), glm::radians(angleY), glm::vec3(.0f, 1.0f, 0.0f));
     tblock.transform *= glm::scale(glm::vec3(scale,scale,scale));
@@ -281,25 +289,29 @@ void setupModels(){
     }
 }
 
-std::string readShaderFile(const char *filePath) {
-    // no feedback is provided for stream errors / exceptions.
+char* readShaderFile(const char *fileName) {
 
-    std::string content;
-    std::ifstream fileStream(filePath, std::ios::in);
+        FILE *fp;
+        long size = 0;
+        char* shaderContent;
 
-    if(!fileStream.is_open()) {
-        std::cerr << "Could not read file " << filePath << ". File does not exist." << std::endl;
-        return "";
-    }
+        /* Read File to get size */
+        fp = fopen(fileName, "rb");
+        if(fp == NULL) {
+            return "";
+        }
+        fseek(fp, 0L, SEEK_END);
+        size = ftell(fp)+1;
+        fclose(fp);
 
-    std::string line = "";
-    while(!fileStream.eof()) {
-        std::getline(fileStream, line);
-        content.append(line + "\n");
-    }
+        /* Read File for Content */
+        fp = fopen(fileName, "r");
+        shaderContent = static_cast<char *>(memset(malloc(size), '\0', size));
+        fread(shaderContent, 1, size-1, fp);
+        fclose(fp);
 
-    fileStream.close();
-    return content;
+        return shaderContent;
+
 }
 
 void setupShaders(){
@@ -307,8 +319,14 @@ void setupShaders(){
     GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
     prg = glCreateProgram();
 
-    const char* vShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\VisualizeNormals.vert)").c_str();
-    const char* fShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\VisualizeNormals.frag)").c_str();
+#if defined(SHADER_VIZ_NORMALS)
+    const char* vShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\VisualizeNormals.vert)");
+    const char* fShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\VisualizeNormals.frag)");
+#elif defined(SHADER_TOON)
+    const char* vShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\Toon.vert)");
+    const char* fShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\Toon.frag)");
+
+#endif
     glShaderSource(vs, 1, &vShader, nullptr);
     glCompileShader(vs);
     glShaderSource(fs, 1, &fShader, nullptr);
@@ -318,8 +336,39 @@ void setupShaders(){
     glAttachShader(prg, vs);
     glAttachShader(prg, fs);
 
+    GLint isLinked = 0;
+    GLint maxLength = 0;
+    char* infoLog = static_cast<char *>(malloc(1024));
+
     glLinkProgram(prg);
+
+    glGetProgramiv(prg, GL_LINK_STATUS, &isLinked);
+    if(isLinked == GL_FALSE) {
+        printf("Shader Program Linker Error\n");
+
+        glGetProgramiv(prg, GL_INFO_LOG_LENGTH, &maxLength);
+        glGetProgramInfoLog(prg, maxLength, &maxLength, &infoLog[0]);
+
+        printf("%s\n", infoLog);
+
+        glDeleteProgram(prg);
+
+        glDeleteShader(vs);
+        glDeleteShader(fs);
+        free(infoLog);
+
+        cout<<"we sad"<<endl;
+        return;
+    }
+
+
+
     glUseProgram(prg);
+    GLint  lightLocation = glGetUniformLocation(prg, "lightSource");
+
+    glUniform4fv(lightLocation, 1, glm::value_ptr(lightDirection));
+
+
 }
 // Setup the rendering state
 void SetupRC()

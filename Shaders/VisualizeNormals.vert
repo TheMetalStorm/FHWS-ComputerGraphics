@@ -15,6 +15,5 @@ uniform TBlock {
 void main()
 {
     Normal  = normal;
-//    Normal = normalize(mat3(transpose(inverse(my.viewingMat *my.transform))) * vec3(normal));
     gl_Position = my.projectionMat * my.viewingMat * my.transform * vec4(vert, 1.0);
 };
