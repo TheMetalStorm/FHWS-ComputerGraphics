@@ -5,6 +5,8 @@
 //#define _LIB
 //#define FREEGLUT_LIB_PRAGMAS 0
 
+#define _USE_MATH_DEFINES
+
 #include <Windows.h>		// Must have for Windows platform builds
 #include "GL/glew.h"
 #include "GL/gl.h"

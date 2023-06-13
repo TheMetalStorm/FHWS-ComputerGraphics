@@ -1,7 +1,7 @@
-//
 // Created by arapo on 29.04.2023.
 //
 #include "Mesh.h"
+#include <glm/gtx/normal.hpp>
 
 string Mesh::eatToDelim(string *line, char c) {
 
@@ -16,103 +16,183 @@ string Mesh::eatToDelim(string *line, char c) {
             return *line;
         }
     }
-
 }
 
 string Mesh::eatToSpace(string *line) {
     return eatToDelim(line, ' ');
 }
 
-//TODO?: Maybe rewrite mit sscanf
-void Mesh::loadFromObj(string filename) {
-    string line;
-    ifstream myfile(filename);
+glm::vec<3, float> getFaceNormal(glm::vec3 a, glm::vec3 b, glm::vec3 c){
+    glm::vec3 ab = b - a;
+    glm::vec3 ac = c - a;
+    //for normals in other dir: switch ab and ac in cross func
+    glm::vec3 trigNormal = glm::cross(ab, ac);
+    return trigNormal / glm::length(trigNormal);
+}
+void Mesh::loadFromStringData(const string& filedata, bool generateSmoothNormals) {
 
+    fillVertexAndIndexVectors(filedata, generateSmoothNormals);
+
+}
+
+//TODO?: Maybe rewrite mit sscanf
+void Mesh::loadFromObj(ifstream& myfile, bool generateSmoothNormals) {
 
     if (myfile.is_open()) {
-        while (getline(myfile, line)) {
-            string type = eatToSpace(&line);
-            if (type != "none" && type != "#") {
-                if (type == "v") {
-                    float x = stof(eatToSpace(&line));
-                    float y = stof(eatToSpace(&line));
-                    float z = stof(eatToSpace(&line));
-                    verts.emplace_back(x, y, z);
-                } else if (type == "vt") {
-                    float u = stof(eatToSpace(&line));
-                    float v = stof(eatToSpace(&line));
-                    vertTex.emplace_back(u, v);
-                } else if (type == "vn") {
-                    float x = stof(eatToSpace(&line));
-                    float y = stof(eatToSpace(&line));
-                    float z = stof(eatToSpace(&line));
-                    vertNormals.emplace_back(x, y, z);
-                } else if (type == "f") {
-                    if (line.find('/') != string::npos) {
-                        string firstTrig = eatToSpace(&line);
-                        int vert = stoi(eatToDelim(&firstTrig, '/'));
-                        int uv = stoi(eatToDelim(&firstTrig, '/'));
-                        int norm = stoi(eatToDelim(&firstTrig, '/'));
-                        indices.emplace_back(vert);
-                        indices.emplace_back(uv);
-                        indices.emplace_back(norm);
-                        string secondTrig = eatToSpace(&line);
-                        vert = stoi(eatToDelim(&secondTrig, '/'));
-                        uv = stoi(eatToDelim(&secondTrig, '/'));
-                        norm = stoi(eatToDelim(&secondTrig, '/'));
-                        indices.emplace_back(vert);
-                        indices.emplace_back(uv);
-                        indices.emplace_back(norm);
-                        string thirdTrig = eatToSpace(&line);
-                        vert = stoi(eatToDelim(&thirdTrig, '/'));
-                        uv = stoi(eatToDelim(&thirdTrig, '/'));
-                        norm = stoi(eatToDelim(&thirdTrig, '/'));
-                        indices.emplace_back(vert);
-                        indices.emplace_back(uv);
-                        indices.emplace_back(norm);
-                    } else {
+        std::stringstream buffer;
+        buffer << myfile.rdbuf();
+        std::string filedata = buffer.str();
+
+        fillVertexAndIndexVectors(filedata, generateSmoothNormals);
+
+        myfile.close();
+
+    }
+    else {
+        cout << "Unable to open file\n";
+    }
+
+
+
+}
+
+void Mesh::fillVertexAndIndexVectors(const string& filedata, bool generateSmoothNormals) {
+    std::stringstream filestream(filedata);
+    std::string line;
+    vector<glm::ivec3> tempFaces = {};
+    while (std::getline(filestream, line)) {
+        string type = eatToSpace(&line);
+        if (type != "none" && type != "#") {
+            if (type == "v") {
+                float x = stof(eatToSpace(&line));
+                float y = stof(eatToSpace(&line));
+                float z = stof(eatToSpace(&line));
+                verts.emplace_back(x, y, z);
+            } else if (type == "vt") {
+                float u = stof(eatToSpace(&line));
+                float v = stof(eatToSpace(&line));
+                vertTex.emplace_back(u, v);
+            } else if (type == "vn") {
+                float x = stof(eatToSpace(&line));
+                float y = stof(eatToSpace(&line));
+                float z = stof(eatToSpace(&line));
+                vertNormals.emplace_back(x, y, z);
+            } else if (type == "f") {
+                if (line.find('/') != string::npos) {
+                    string firstTrig = eatToSpace(&line);
+                    int vert = stoi(eatToDelim(&firstTrig, '/'));
+                    int uv = stoi(eatToDelim(&firstTrig, '/'));
+                    int norm = stoi(eatToDelim(&firstTrig, '/'));
+                    indices.emplace_back(vert);
+                    indices.emplace_back(uv);
+                    indices.emplace_back(norm);
+                    string secondTrig = eatToSpace(&line);
+                    vert = stoi(eatToDelim(&secondTrig, '/'));
+                    uv = stoi(eatToDelim(&secondTrig, '/'));
+                    norm = stoi(eatToDelim(&secondTrig, '/'));
+                    indices.emplace_back(vert);
+                    indices.emplace_back(uv);
+                    indices.emplace_back(norm);
+                    string thirdTrig = eatToSpace(&line);
+                    vert = stoi(eatToDelim(&thirdTrig, '/'));
+                    uv = stoi(eatToDelim(&thirdTrig, '/'));
+                    norm = stoi(eatToDelim(&thirdTrig, '/'));
+                    indices.emplace_back(vert);
+                    indices.emplace_back(uv);
+                    indices.emplace_back(norm);
+                } else {
+                    if(generateSmoothNormals){
                         int vert1 = stoi(eatToSpace(&line));
                         int vert2 = stoi(eatToSpace(&line));
                         int vert3 = stoi(eatToSpace(&line));
-
-                        glm::vec3 a = verts[vert1-1];
-                        glm::vec3 b = verts[vert2-1];
-                        glm::vec3 c = verts[vert3-1];
-
-                        glm::vec3 ab = b-a;
-                        glm::vec3 ac = c-a;
-
-                        //for normals in other dir: switch ab and ac in cross func
-                        glm::vec3 trigNormal = glm::cross(ab,ac);
-                        vertNormals.emplace_back(trigNormal / glm::length(trigNormal));
-                        int normalIndex = vertNormals.size();
-
-                        //dummy uv:
-                        vertTex.emplace_back(0,0);
-                        int uvIndex = vertNormals.size();
-
-                        indices.emplace_back(vert1);
-                        indices.emplace_back(normalIndex);
-                        indices.emplace_back(uvIndex);
-
-                        indices.emplace_back(vert2);
-                        indices.emplace_back(normalIndex);
-                        indices.emplace_back(uvIndex);
-
-                        indices.emplace_back(vert3);
-                        indices.emplace_back(normalIndex);
-                        indices.emplace_back(uvIndex);
+                        tempFaces.emplace_back(vert1, vert2, vert3);
                     }
-                    //TODO: change if we laod f with more values
-                    vertexCount+=3;
-                }
+                    else {
+                        int vert1 = stoi(eatToSpace(&line));
+                        int vert2 = stoi(eatToSpace(&line));
+                        int vert3 = stoi(eatToSpace(&line));
+                        glm::vec3 a = verts[vert1 - 1];
+                        glm::vec3 b = verts[vert2 - 1];
+                        glm::vec3 c = verts[vert3 - 1];
+                        auto normal = getFaceNormal(a,b,c);
+                        vertNormals.emplace_back(normal);
+                        int normalIndex = vertNormals.size();
+                        //dummy uv:
+                        vertTex.emplace_back(0, 0);
+                        int uvIndex = vertTex.size();
+                        indices.emplace_back(vert1);
+                        indices.emplace_back(uvIndex);
+                        indices.emplace_back(normalIndex);
+                        indices.emplace_back(vert2);
+                        indices.emplace_back(uvIndex);
+                        indices.emplace_back(normalIndex);
+                        indices.emplace_back(vert3);
+                        indices.emplace_back(uvIndex);
+                        indices.emplace_back(normalIndex);
 
+                    }
+                }
+                //TODO: change if we load f with more values
+                vertexCount +=3;
             }
 
+
         }
-        myfile.close();
-    } else {
-        cout << "Unable to open file\n";
+
+    }
+    if(generateSmoothNormals){
+        std::vector<glm::vec3> normals(verts.size(), glm::vec3(0.0f, 0.0f, 0.0f));
+
+        for (const auto &item: tempFaces){
+            int x = item.x - 1;
+            int y = item.y - 1;
+            int z = item.z - 1;
+            glm::vec3 a = verts[x];
+            glm::vec3 b = verts[y];
+            glm::vec3 c = verts[z];
+            glm::vec3 normal = getFaceNormal(a,b,c);
+
+            normals[x] += normal;
+            normals[y] += normal;
+            normals[z] += normal;
+        }
+
+        for (auto& normal : normals) {
+            normal = glm::normalize(normal);
+        }
+
+        for (const auto &item: tempFaces){
+            vertTex.emplace_back(0, 0);
+            int uvIndex1 = vertTex.size();
+
+            vertTex.emplace_back(0, 0);
+            int uvIndex2 = vertTex.size();
+
+            vertTex.emplace_back(0, 0);
+            int uvIndex3 = vertTex.size();
+
+            indices.emplace_back(item.x);
+            indices.emplace_back(uvIndex1);
+            auto normalX = normals[item.x-1];
+            vertNormals.emplace_back(normalX);
+            int normalIndexX = vertNormals.size();
+            indices.emplace_back(normalIndexX);
+
+            indices.emplace_back(item.y);
+            indices.emplace_back(uvIndex2);
+            auto normalY = normals[item.y-1];
+            vertNormals.emplace_back(normalY);
+            int normalIndexY = vertNormals.size();
+            indices.emplace_back(normalIndexY);
+
+            indices.emplace_back(item.z);
+            indices.emplace_back(uvIndex3);
+            auto normalZ = normals[item.z-1];
+            vertNormals.emplace_back(normalZ);
+            int normalIndexZ = vertNormals.size();
+            indices.emplace_back(normalIndexZ);
+
+        }
     }
 }
 
@@ -156,6 +236,9 @@ float *Mesh::generateVertexDataFromModel() {
         index++;
         vertexData[index] = vertNormals[indices[i] - 1].z;
         index++;
+
+
+
     }
     return vertexData;
 }
@@ -216,3 +299,18 @@ void Mesh::render(bool drawPolygon) const {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+glm::vec<3, float> Mesh::calcVertNormal(
+        pair<multimap<int, glm::vec<3, float>>::iterator, multimap<int, glm::vec<3, float>>::iterator> range) {
+
+    glm::vec3 sum(0.0f);
+
+    for(auto it = range.first; it != range.second; ++it){
+        sum += it->second;
+    }
+    int rangeSize = std::distance(range.first, range.second);
+
+    return sum / static_cast<float>(rangeSize);
+
+}
+

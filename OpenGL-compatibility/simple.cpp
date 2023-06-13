@@ -3,8 +3,8 @@
 
 #define FREEGLUT_STATIC
 
-//#define SHADER_VIZ_NORMALS
-#define SHADER_TOON
+#define SHADER_VIZ_NORMALS
+//#define SHADER_TOON
 
 //#define TEAPOT
 #define MODEL
@@ -45,7 +45,6 @@ float scaleFactor = 0.2;
 GLfloat xstep = 0.03f;
 GLfloat ystep = 0.02f;
 
-bool drawCube = true;
 vector<Mesh*> models = {};
 int currentModelIndex = 0;
 
@@ -278,12 +277,121 @@ void ChangeSize(GLsizei w, GLsizei h)
 //    else
 //        glViewport(0,0, w, w);
 }
+
+string generateCube(float size) {
+
+    std::string sizeString = std::to_string(size/2);
+    std::string negativeSizeString = std::to_string(-size/2);
+
+    return "# cube.obj\n"
+           "#\n"
+           "\n"
+           "o cube\n"
+           "\n"
+           "v "+ negativeSizeString +" "+ negativeSizeString +" "+ sizeString +"\n"
+                                                 "v "+ sizeString +" "+ negativeSizeString +" "+ sizeString + "\n"
+           "v "+ negativeSizeString +" "+ sizeString +" "+ sizeString +"\n"
+           "v "+ sizeString +" "+ sizeString +" "+ sizeString +"\n"
+           "v "+ negativeSizeString +" "+ sizeString +" "+ negativeSizeString +"\n"
+           "v "+ sizeString +" "+ sizeString +" "+ negativeSizeString +"\n"
+           "v "+ negativeSizeString +" "+ negativeSizeString +" "+ negativeSizeString +"\n"
+           "v "+ sizeString +" "+ negativeSizeString +" "+ negativeSizeString +"\n"
+           "\n"
+           "vt 0.000000 0.000000\n"
+           "vt 1.000000 0.000000\n"
+           "vt 0.000000 1.000000\n"
+           "vt 1.000000 1.000000\n"
+           "\n"
+           "vn 0.000000 0.000000 1.000000\n"
+           "vn 0.000000 1.000000 0.000000\n"
+           "vn 0.000000 0.000000 -1.000000\n"
+           "vn 0.000000 -1.000000 0.000000\n"
+           "vn 1.000000 0.000000 0.000000\n"
+           "vn -1.000000 0.000000 0.000000\n"
+           "\n"
+           "g cube\n"
+           "s 1\n"
+           "f 1/1/1 2/2/1 3/3/1\n"
+           "f 3/3/1 2/2/1 4/4/1\n"
+           "s 2\n"
+           "f 3/1/2 4/2/2 5/3/2\n"
+           "f 5/3/2 4/2/2 6/4/2\n"
+           "s 3\n"
+           "f 5/4/3 6/3/3 7/2/3\n"
+           "f 7/2/3 6/3/3 8/1/3\n"
+           "s 4\n"
+           "f 7/1/4 8/2/4 1/3/4\n"
+           "f 1/3/4 8/2/4 2/4/4\n"
+           "s 5\n"
+           "f 2/1/5 8/2/5 4/3/5\n"
+           "f 4/3/5 8/2/5 6/4/5\n"
+           "s 6\n"
+           "f 7/1/6 1/2/6 5/3/6\n"
+           "f 5/3/6 1/2/6 3/4/6";
+
+}
+
+ static float mapRange(float old_value, float old_bottom, float old_top, float new_bottom, float new_top ) {
+     return (old_value - old_bottom) / (old_top - old_bottom) * (new_top - new_bottom) + new_bottom;
+ }
+
+string generateSphere(float radius, int detailLevel) {
+
+    glm::vec3 verts[detailLevel+1][detailLevel+2];
+
+    for(int i = 0; i <= detailLevel; i++){
+        float lat = mapRange(i, 0, detailLevel, 0, M_PI);
+
+        for(int j = 0; j <= detailLevel+1; j++){
+            float lon = mapRange(j, 0, detailLevel+1, 0, 2*M_PI);
+
+            float x = radius *sin(lat) * cos(lon);
+            float y = radius * sin(lat) * sin(lon);
+            float z = radius * cos(lat);
+            verts[i][j] = glm::vec3(x,y,z);
+        }
+    }
+
+    std::vector<glm::ivec3> faces;
+
+    for(int i = 0; i < detailLevel; i++) {
+        for(int j = 0; j < detailLevel+1; j++) {
+            int a = i*(detailLevel+2) + j+1;
+            int b = (i+1)*(detailLevel+2) + j+1;
+            int c = i*(detailLevel+2) + j+2;
+            int d = (i+1)*(detailLevel+2) + j+2;
+            faces.push_back(glm::ivec3(a, b, c));
+            faces.push_back(glm::ivec3(b, d, c));}
+    }
+
+    std::ostringstream oss;
+
+    // Write vertices.
+    for (int i = 0; i <= detailLevel; i++) {
+        for (int j = 0; j <= detailLevel+1; j++) {
+            oss << "v " << verts[i][j].x << " " << verts[i][j].y << " " << verts[i][j].z << "\n";
+        }
+    }
+
+    // Write faces.
+    for (const auto &face : faces) {
+        oss << "f " << face.x << " " << face.y << " " << face.z << "\n";
+    }
+
+    return oss.str();
+}
+
+
 ///////////////////////////////////////////////////////////
 void setupModels(){
-    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)"));
-    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)"));
-    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)"));
-
+//    string cubeData = generateCube(2);
+//    models.push_back(new Mesh(cubeData, false, true));
+    string sphereData = generateSphere(1, 50);
+    models.push_back(new Mesh(sphereData, false, true));
+//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)", true,true));
+//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)", true,true));
+//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)", true,true));
+//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\test.obj)", false));
     for (const auto &item: models){
         item->init();
     }
