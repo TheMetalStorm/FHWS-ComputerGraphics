@@ -253,6 +253,28 @@ void Mesh::init()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT)* getVertexCount() * floatsPerVertex, vertexData, GL_STATIC_DRAW);
 
+    if(texData){
+        glGenTextures(1, &texture);
+        glActiveTexture(GL_TEXTURE27);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+
+        glGenSamplers(1, &sampler);
+        glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glSamplerParameteri(sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glBindSampler(27, sampler);
+
+    }
+
+
     glEnableVertexAttribArray(0); // siehe Shader: „location 0“
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
@@ -265,6 +287,13 @@ void Mesh::init()
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    if(texData){
+        glBindSampler(0, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+
+
 }
 
 void Mesh::transform(unsigned int prg, glm::mat4x4 look, glm::mat4x4 proj) {
@@ -280,11 +309,18 @@ void Mesh::transform(unsigned int prg, glm::mat4x4 look, glm::mat4x4 proj) {
 }
 
 
-void Mesh::render(bool drawPolygon) const {
+void Mesh::render(GLuint program, bool drawPolygon) const {
 
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindSampler(27, sampler);
+    glUniform1i(glGetUniformLocation(program, "tex"), 27);
+
+
+
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
 
@@ -296,6 +332,8 @@ void Mesh::render(bool drawPolygon) const {
     }
     glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
 
+    glBindSampler(0, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

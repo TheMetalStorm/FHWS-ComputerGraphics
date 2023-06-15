@@ -2,7 +2,9 @@
 
 in vec3 lightDir;
 in vec3 Normal;
+in vec2 texCord;
 out vec4 fragColor;
+uniform sampler2D tex;
 
 vec4 toonify(float intensity) {
     vec4 color;
@@ -16,5 +18,7 @@ vec4 toonify(float intensity) {
 void main() {
     vec3 n = normalize(Normal);
     float intensity = max(dot(lightDir, n), 0.0);
-    fragColor = toonify(intensity);
+    fragColor = toonify(intensity)* texture(tex, texCord);
+
+
 }

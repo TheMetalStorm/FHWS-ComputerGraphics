@@ -19,7 +19,8 @@ class Mesh {
 
 public:
 
-    explicit Mesh(const string& dataSource, bool fromFile, bool generatSmoothNormals) {
+    explicit Mesh(const string& dataSource, bool fromFile, unsigned char* texData,  bool generatSmoothNormals) {
+        this->texData = texData;
         if(fromFile){
             ifstream myfile(dataSource);
             this->loadFromObj(myfile, generatSmoothNormals);
@@ -37,7 +38,7 @@ public:
     int getVertexCount() const;
     void init();
     void transform(unsigned int prg, glm::mat4x4 look, glm::mat4x4 proj);
-    void render(bool drawPolygon) const;
+    void render(GLuint program, bool drawPolygon) const;
     tblock tblock{};
 
 private:
@@ -50,6 +51,9 @@ private:
     int indicesCount = 0;
     int vertexCount = 0;
     float *vertexData{};
+    unsigned char* texData = {};
+    GLuint texture = 0;
+    GLuint sampler = 0;
     GLuint vbo = 0, vao = 0;
 
     //v

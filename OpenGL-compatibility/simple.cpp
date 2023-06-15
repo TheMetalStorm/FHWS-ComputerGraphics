@@ -3,8 +3,8 @@
 
 #define FREEGLUT_STATIC
 
-#define SHADER_VIZ_NORMALS
-//#define SHADER_TOON
+//#define SHADER_VIZ_NORMALS
+#define SHADER_TOON
 
 //#define TEAPOT
 #define MODEL
@@ -30,6 +30,8 @@ void drawMovingRectTranslateRotateScale(float x, float y);
 #include "simple.h"
 #include "Mesh.h"
 #include <stdio.h>
+#include "../texture/texture/moonmap.h"
+#include "../texture/texture/orange.h"
 
 
 GLfloat xTranslation = 0.0f;
@@ -213,7 +215,7 @@ void RenderScene(void)
 #if defined(MODEL)
     models[currentModelIndex]->tblock.transform = tblock.transform;
     models[currentModelIndex]->transform(prg, viewingMat, projectionMat);
-    models[currentModelIndex]->render(false);
+    models[currentModelIndex]->render(prg, false);
 #endif
 
     glutSwapBuffers();
@@ -384,13 +386,15 @@ string generateSphere(float radius, int detailLevel) {
 
 ///////////////////////////////////////////////////////////
 void setupModels(){
-//    string cubeData = generateCube(2);
-//    models.push_back(new Mesh(cubeData, false, true));
-    string sphereData = generateSphere(1, 50);
-    models.push_back(new Mesh(sphereData, false, true));
-//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)", true,true));
-//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)", true,true));
-//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)", true,true));
+
+    unsigned char* moonTex = moon;
+    string cubeData = generateCube(2);
+//    models.push_back(new Mesh(cubeData, false, moonTex, true));
+//    string sphereData = generateSphere(1, 50);
+//    models.push_back(new Mesh(sphereData, false, true));
+    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)", true, moonTex, true));
+//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere_tex.obj)", true, moonTex, true));
+//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)", true, {},true));
 //    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\test.obj)", false));
     for (const auto &item: models){
         item->init();
