@@ -14,11 +14,12 @@ uniform TBlock {
 
 out vec3 Normal;
 out vec3 lightDir;
-
+out vec2 texCord;
 
 void main()
 {
     lightDir = normalize(lightSource.xyz);
     Normal = normalize(mat3(transpose(inverse(my.viewingMat *my.transform))) * vec3(normal));
     gl_Position = my.projectionMat * my.viewingMat * my.transform * vec4(vert, 1.0);
+    texCord = uv;
 };
