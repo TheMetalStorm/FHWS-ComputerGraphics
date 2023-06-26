@@ -5,8 +5,14 @@
 
 //#define SHADER_VIZ_NORMALS
 //#define SHADER_TOON
+
+//TODO: implement multiple light
 //#define SHADER_GOURAUD
 #define SHADER_PHONG
+
+
+//TODO: implement
+//#define SHADER_FLAT
 
 //#define TEAPOT
 #define MODEL
