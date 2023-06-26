@@ -1,0 +1,55 @@
+﻿  Flex & Bison
+  ..\rayyacc.y: Warnung: 15 Nicht-Terminale, die in Grammatik nutzlos sind
+  ..\rayyacc.y: Warnung: 22 Regeln, die in Grammatik nutzlos sind
+  ..\\rayyacc.y:81.1-23: Warnung: Nicht-Terminal nutzlos in Grammatik: some_viewing_parameters
+  ..\\rayyacc.y:83.7-85.7: Warnung: Nicht-Terminal nutzlos in Grammatik: $@1
+  ..\\rayyacc.y:86.5-22: Warnung: Nicht-Terminal nutzlos in Grammatik: viewing_parameters
+  ..\\rayyacc.y:109.1-18: Warnung: Nicht-Terminal nutzlos in Grammatik: picture_parameters
+  ..\\rayyacc.y:110.26-42: Warnung: Nicht-Terminal nutzlos in Grammatik: picture_parameter
+  ..\\rayyacc.y:105.26-42: Warnung: Nicht-Terminal nutzlos in Grammatik: viewing_parameter
+  ..\\rayyacc.y:115.7-16: Warnung: Nicht-Terminal nutzlos in Grammatik: resolution
+  ..\\rayyacc.y:116.7-16: Warnung: Nicht-Terminal nutzlos in Grammatik: background
+  ..\\rayyacc.y:120.7-14: Warnung: Nicht-Terminal nutzlos in Grammatik: eyepoint
+  ..\\rayyacc.y:121.7-12: Warnung: Nicht-Terminal nutzlos in Grammatik: lookat
+  ..\\rayyacc.y:124.7-8: Warnung: Nicht-Terminal nutzlos in Grammatik: up
+  ..\\rayyacc.y:122.7-10: Warnung: Nicht-Terminal nutzlos in Grammatik: fovy
+  ..\\rayyacc.y:123.7-12: Warnung: Nicht-Terminal nutzlos in Grammatik: aspect
+  ..\\rayyacc.y:163.1-15: Warnung: Nicht-Terminal nutzlos in Grammatik: global_lighting
+  ..\\rayyacc.y:63.35-42: Warnung: Nicht-Terminal nutzlos in Grammatik: angleVal
+  ..\\rayyacc.y:83.7-85.7: Warnung: Regeln nutzlos in Grammatik: $@1: /* leer */
+  ..\\rayyacc.y:83.7-98.7: Warnung: Regeln nutzlos in Grammatik: some_viewing_parameters: $@1 viewing_parameters
+  ..\\rayyacc.y:105.7-42: Warnung: Regeln nutzlos in Grammatik: viewing_parameters: viewing_parameters viewing_parameter
+  ..\\rayyacc.y:106.6: Warnung: Regeln nutzlos in Grammatik: viewing_parameters: /* leer */
+  ..\\rayyacc.y:110.7-42: Warnung: Regeln nutzlos in Grammatik: picture_parameters: picture_parameters picture_parameter
+  ..\\rayyacc.y:111.7-23: Warnung: Regeln nutzlos in Grammatik: picture_parameters: picture_parameter
+  ..\\rayyacc.y:115.7-16: Warnung: Regeln nutzlos in Grammatik: picture_parameter: resolution
+  ..\\rayyacc.y:116.7-16: Warnung: Regeln nutzlos in Grammatik: picture_parameter: background
+  ..\\rayyacc.y:120.7-14: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: eyepoint
+  ..\\rayyacc.y:121.7-12: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: lookat
+  ..\\rayyacc.y:122.7-10: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: fovy
+  ..\\rayyacc.y:123.7-12: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: aspect
+  ..\\rayyacc.y:124.7-8: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: up
+  ..\\rayyacc.y:128.7-129.48: Warnung: Regeln nutzlos in Grammatik: resolution: RESOLUTION index index
+  ..\\rayyacc.y:133.7-134.54: Warnung: Regeln nutzlos in Grammatik: background: BACKGROUND colorVal colorVal colorVal
+  ..\\rayyacc.y:139.7-140.53: Warnung: Regeln nutzlos in Grammatik: eyepoint: EYEPOINT realVal realVal realVal
+  ..\\rayyacc.y:144.7-145.51: Warnung: Regeln nutzlos in Grammatik: lookat: LOOKAT realVal realVal realVal
+  ..\\rayyacc.y:149.7-150.46: Warnung: Regeln nutzlos in Grammatik: up: UP realVal realVal realVal
+  ..\\rayyacc.y:154.7-155.34: Warnung: Regeln nutzlos in Grammatik: fovy: FOVY realVal
+  ..\\rayyacc.y:159.7-160.37: Warnung: Regeln nutzlos in Grammatik: aspect: ASPECT realVal
+  ..\\rayyacc.y:164.7-165.52: Warnung: Regeln nutzlos in Grammatik: global_lighting: AMBIENCE colorVal colorVal colorVal
+  ..\\rayyacc.y:373.12-381.5: Warnung: Regeln nutzlos in Grammatik: angleVal: realVal
+  stdafx.cpp
+  Color.cpp
+  Image.cpp
+  Light.cpp
+  Objekt.cpp
+  Property.cpp
+  Ray.cpp
+  raytrace.cpp
+  Surface.cpp
+  Vector.cpp
+  Code wird generiert...
+  rayyacc.tab.c
+..\lex.yy.c(1076,3): warning C4267: "=": Konvertierung von "size_t" nach "int", Datenverlust möglich
+..\lex.yy.c(1243,28): warning C4244: "Initialisierung": Konvertierung von "__int64" in "int", möglicher Datenverlust
+  raytrace.vcxproj -> C:\Users\arapo\Downloads\Raytrace-VS2022\Raytrace-VS2022\raytrace\x64\Debug\raytrace.exe
