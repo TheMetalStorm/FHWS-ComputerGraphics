@@ -265,6 +265,7 @@ void Mesh::init()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 
+
         glGenSamplers(1, &sampler);
         glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -331,6 +332,7 @@ void Mesh::render(GLuint program, bool drawPolygon) const {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
+
 
     glBindSampler(0, 0);
     glBindTexture(GL_TEXTURE_2D, 0);

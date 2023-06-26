@@ -18,7 +18,7 @@ vec4 toonify(float intensity) {
 void main() {
     vec3 n = normalize(Normal);
     float intensity = max(dot(lightDir, n), 0.0);
-    fragColor = toonify(intensity)* texture(tex, texCord);
+    fragColor = toonify(intensity);// * texture(tex, texCord);
 
 
 }

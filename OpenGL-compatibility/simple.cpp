@@ -4,7 +4,9 @@
 #define FREEGLUT_STATIC
 
 //#define SHADER_VIZ_NORMALS
-#define SHADER_TOON
+//#define SHADER_TOON
+//#define SHADER_GOURAUD
+#define SHADER_PHONG
 
 //#define TEAPOT
 #define MODEL
@@ -32,6 +34,7 @@ void drawMovingRectTranslateRotateScale(float x, float y);
 #include <stdio.h>
 #include "../texture/texture/moonmap.h"
 #include "../texture/texture/orange.h"
+#include "../texture/texture/wmap.h"
 
 
 GLfloat xTranslation = 0.0f;
@@ -42,7 +45,7 @@ GLfloat angleY = 0.0f;
 GLfloat angleChangeSpeed = 5;
 GLfloat scale = 3.0f;
 
-float scaleFactor = 0.2;
+float scaleFactor = 0.1;
 
 GLfloat xstep = 0.03f;
 GLfloat ystep = 0.02f;
@@ -53,7 +56,10 @@ int currentModelIndex = 0;
 GLuint prg;
 
 float screenWidth, screenHeight = 1.0f;
-glm::vec4 lightDirection = glm::normalize(glm::vec4(-2.0f, 0.0f, 0.0f, 1.0f));
+glm::vec4 ambient = { 0.0, 0.3, 0.2, 1.0 };
+glm::vec4 diffuse = { 0.8, 1.0, 0.9, 1.0 };
+glm::vec4 specular = { 1.0, 1.0, 1.0, 1.0 };
+glm::vec4 lightDirection = glm::normalize(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
 
 void renderCube(float r, float g, float b) {
@@ -180,7 +186,7 @@ void RenderScene(void)
     //d
 //    drawMovingRectTranslateRotateScale( x,  y);
 #if defined(MODEL) || defined(TEAPOT)
-    auto viewingMat =  glm::lookAt(glm::vec3(0, 0, -4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+    auto viewingMat =  glm::lookAt(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 #if defined(ORTHO)
     auto projectionMat =  glm::ortho(0.f, screenWidth/screenHeight, 0.0f, 1.0f, -1.f, 50.0f);
@@ -188,7 +194,7 @@ void RenderScene(void)
     auto projectionMat = glm::perspective(30.0f, screenWidth/screenHeight, .1f, 300.0f);
 #endif
     tblock tblock;
-    tblock.transform = glm::translate(glm::vec3(xTranslation, yTranslation, 2));
+    tblock.transform = glm::translate(glm::vec3(xTranslation, yTranslation, 0));
     tblock.transform *=glm::rotate(glm::mat4(1.0f), glm::radians(angleX), glm::vec3(1.0f, 0.0f, 0.0f));
     tblock.transform *=glm::rotate(glm::mat4(1.0f), glm::radians(angleY), glm::vec3(.0f, 1.0f, 0.0f));
     tblock.transform *= glm::scale(glm::vec3(scale,scale,scale));
@@ -337,64 +343,69 @@ string generateCube(float size) {
      return (old_value - old_bottom) / (old_top - old_bottom) * (new_top - new_bottom) + new_bottom;
  }
 
-string generateSphere(float radius, int detailLevel) {
-
-    glm::vec3 verts[detailLevel+1][detailLevel+2];
-
-    for(int i = 0; i <= detailLevel; i++){
-        float lat = mapRange(i, 0, detailLevel, 0, M_PI);
-
-        for(int j = 0; j <= detailLevel+1; j++){
-            float lon = mapRange(j, 0, detailLevel+1, 0, 2*M_PI);
-
-            float x = radius *sin(lat) * cos(lon);
-            float y = radius * sin(lat) * sin(lon);
-            float z = radius * cos(lat);
-            verts[i][j] = glm::vec3(x,y,z);
-        }
-    }
-
-    std::vector<glm::ivec3> faces;
-
-    for(int i = 0; i < detailLevel; i++) {
-        for(int j = 0; j < detailLevel+1; j++) {
-            int a = i*(detailLevel+2) + j+1;
-            int b = (i+1)*(detailLevel+2) + j+1;
-            int c = i*(detailLevel+2) + j+2;
-            int d = (i+1)*(detailLevel+2) + j+2;
-            faces.push_back(glm::ivec3(a, b, c));
-            faces.push_back(glm::ivec3(b, d, c));}
-    }
-
-    std::ostringstream oss;
-
-    // Write vertices.
-    for (int i = 0; i <= detailLevel; i++) {
-        for (int j = 0; j <= detailLevel+1; j++) {
-            oss << "v " << verts[i][j].x << " " << verts[i][j].y << " " << verts[i][j].z << "\n";
-        }
-    }
-
-    // Write faces.
-    for (const auto &face : faces) {
-        oss << "f " << face.x << " " << face.y << " " << face.z << "\n";
-    }
-
-    return oss.str();
-}
+//string generateSphere(float radius, int detailLevel) {
+//
+//    glm::vec3 verts[detailLevel+1][detailLevel+2];
+//
+//
+//    verts[0][0] = glm::vec3(0, radius, 0);
+//    for(int i = 1; i < detailLevel; i++){
+//        float lon = mapRange(i, 0, detailLevel-1, 0, 2*M_PI);
+//
+//        for(int j = 0; j < detailLevel; ++j){
+//            float lat = mapRange(j, 0, detailLevel-1, 0, M_PI);
+//
+//            float x = radius *sin(lat) * cos(lon);
+//            float y = radius * sin(lat) * sin(lon);
+//            float z = radius * cos(lat);
+//            verts[i][j] = glm::vec3(x,y,z);
+//
+//        }
+//    }
+//
+//    std::vector<glm::ivec3> faces;
+//
+//    for(int i = 0; i < detailLevel; i++) {
+//        for(int j = 0; j < detailLevel+1; j++) {
+//            int a = i*(detailLevel+2) + j+1;
+//            int b = (i+1)*(detailLevel+2) + j+1;
+//            int c = i*(detailLevel+2) + j+2;
+//            int d = (i+1)*(detailLevel+2) + j+2;
+//            faces.push_back(glm::ivec3(a, b, c));
+//            faces.push_back(glm::ivec3(b, d, c));}
+//    }
+//
+//    std::ostringstream oss;
+//
+//    // Write vertices.
+//    for (int i = 0; i <= detailLevel; i++) {
+//        for (int j = 0; j <= detailLevel+1; j++) {
+//            oss << "v " << verts[i][j].x << " " << verts[i][j].y << " " << verts[i][j].z << "\n";
+//        }
+//    }
+//
+//    // Write faces.
+//    for (const auto &face : faces) {
+//        oss << "f " << face.x << " " << face.y << " " << face.z << "\n";
+//    }
+//
+//    return oss.str();
+//}
 
 
 ///////////////////////////////////////////////////////////
 void setupModels(){
 
-    unsigned char* moonTex = moon;
-    string cubeData = generateCube(2);
+
+
+    //    string cubeData = generateCube(2);
 //    models.push_back(new Mesh(cubeData, false, moonTex, true));
-//    string sphereData = generateSphere(1, 50);
-//    models.push_back(new Mesh(sphereData, false, true));
-    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)", true, moonTex, true));
-//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere_tex.obj)", true, moonTex, true));
-//    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)", true, {},true));
+//    string sphereData = generateSphere(1, 3);
+    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\cube.obj)", true, moon, true));
+    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\sphere.obj)", true,
+                              moon, true));
+    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\lucy\lucy.obj)", true,
+                              {},true));
 //    models.push_back(new Mesh(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Wavefront Datasets CG\datasets\test.obj)", false));
     for (const auto &item: models){
         item->init();
@@ -437,7 +448,12 @@ void setupShaders(){
 #elif defined(SHADER_TOON)
     const char* vShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\Toon.vert)");
     const char* fShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\Toon.frag)");
-
+#elif defined(SHADER_GOURAUD)
+    const char* vShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\Gouraud.vert)");
+    const char* fShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\Gouraud.frag)");
+#elif defined(SHADER_PHONG)
+    const char* vShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\Phong.vert)");
+    const char* fShader = readShaderFile(R"(C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\Shaders\Phong.frag)");
 #endif
     glShaderSource(vs, 1, &vShader, nullptr);
     glCompileShader(vs);
@@ -477,15 +493,23 @@ void setupShaders(){
 
     glUseProgram(prg);
     GLint  lightLocation = glGetUniformLocation(prg, "lightSource");
+    GLint  ambientLocation = glGetUniformLocation(prg, "ambientColor");
+    GLint  diffuseLocation = glGetUniformLocation(prg, "diffuseColor");
+    GLint  specularLocation = glGetUniformLocation(prg, "specularColor");
 
     glUniform4fv(lightLocation, 1, glm::value_ptr(lightDirection));
+    glUniform4fv(ambientLocation, 1, glm::value_ptr(ambient));
+    glUniform4fv(diffuseLocation, 1, glm::value_ptr(diffuse));
+    glUniform4fv(specularLocation, 1, glm::value_ptr(specular));
+
+
 
 
 }
 // Setup the rendering state
 void SetupRC()
 {
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     GLenum err = glewInit();
     #if defined(MODEL) || defined(TEAPOT)
         setupShaders();
@@ -519,13 +543,17 @@ void TimerFunction(int value)
 }
 void SpecialKeyboardFunc(int key, int x, int y) {
     if (key == GLUT_KEY_LEFT)
-        xTranslation-= translationFactor;
+        angleY += angleChangeSpeed;
+
     else if(key == GLUT_KEY_RIGHT )
-        xTranslation+= translationFactor;
+        angleY -= angleChangeSpeed;
+
     else if (key == GLUT_KEY_UP)
-        yTranslation-= translationFactor;
+        angleX += angleChangeSpeed;
+
     else if(key == GLUT_KEY_DOWN )
-        yTranslation+= translationFactor;
+        angleX -= angleChangeSpeed;
+
 
 
     cout <<xTranslation<< endl;
@@ -537,13 +565,13 @@ void SpecialKeyboardFunc(int key, int x, int y) {
 void KeyboardFunc(unsigned char key, int x, int y) {
 
     if (key == 'd')
-        angleY += angleChangeSpeed;
+        xTranslation-= translationFactor;
     else if(key == 'a')
-        angleY -= angleChangeSpeed;
+        xTranslation+= translationFactor;
     if (key == 'w')
-        angleX += angleChangeSpeed;
+        yTranslation-= translationFactor;
     else if(key == 's')
-        angleX -= angleChangeSpeed;
+        yTranslation+= translationFactor;
 
     //space
     if (key == 32)
@@ -563,7 +591,7 @@ void mouseFunc(int button, int state, int x, int y)
                 scale+=scaleFactor;
                 break;
             case 4:
-                if (scale > 0.2) {
+                if (scale > 0.01) {
                     scale-=scaleFactor;
                 }
                 break;
