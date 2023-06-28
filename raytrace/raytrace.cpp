@@ -10,12 +10,16 @@
 const double SCREENWIDTH = 1000;
 const double SCREENHEIGHT = 1000;
 
+
+
 using namespace std;
 
 vector<Surface> surfaces;
 vector<Property> properties;
 vector<Objekt> objekte;
 vector<Light> lights;
+int Xresolution;
+int Yresolution;
 
 extern "C" {
 	extern FILE *yyin;
@@ -33,6 +37,12 @@ extern "C" {
 		fprintf(stderr,"  adding prop %f %f %f %f %f\n", r, g, b, s, m);
 		properties.push_back(Property(n, Color(ar, ag, ab), Color(r, g, b), s, m));
 	};
+	void add_resolution(int x, int y) {
+		Xresolution = x;
+		Yresolution = y;
+		fprintf(stderr, "  adding resolution X: %d, Y: %d\n", x,y);
+
+	}
 	void add_objekt(char *ns, char *np) {
 		Surface *s = NULL;
 		Property *p = NULL;
@@ -73,9 +83,7 @@ int main(int argc, _TCHAR* argv[])
 	}
 	yyparse();
 	fclose (yyin);
-	
-	int Xresolution = 1250;
-	int Yresolution = 1250;
+
 	double dx = SCREENWIDTH / (double)Xresolution;
 	double dy = SCREENHEIGHT / (double)Yresolution;
 	double y = -0.5 * SCREENHEIGHT;

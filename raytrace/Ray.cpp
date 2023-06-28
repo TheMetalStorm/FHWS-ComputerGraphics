@@ -143,7 +143,7 @@ double Ray::intersect(Objekt &obj)
 	double a, b, c, d, e, f, g, h, j, k, t = -1.0,
 		acoef, bcoef, ccoef, root, disc;
 
-	auto surf = obj.getSurface();
+	Surface surf = *obj.getSurface();
 	a = surf.a; 
 	b = surf.b; 
 	c = surf.c;

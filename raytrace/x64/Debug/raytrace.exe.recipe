@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\arapo\Downloads\Raytrace-VS2022\Raytrace-VS2022\raytrace\x64\Debug\raytrace.exe</FullPath>
+      <FullPath>C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\raytrace\x64\Debug\raytrace.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
