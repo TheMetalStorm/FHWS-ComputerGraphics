@@ -6,7 +6,7 @@
 # Bild-Parameter
 #
 resolution      500    500 # Bildbreite Bildhoehe (in Pixeln)
-#background	0.0	0.0	0.0		    # Hintergrundfarbe schwarz
+background	1.0	1.0	1.0		    # Hintergrundfarbe schwarz
 
 # 
 # Projektion

@@ -57,6 +57,7 @@ extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
 extern void add_resolution(int x, int y);
 extern void add_eyepoint (double x, double y, double z);
+extern void add_background_color (double r, double g, double b);
 
 %}
 
@@ -137,7 +138,7 @@ resolution
 
 background
     : BACKGROUND colorVal colorVal colorVal
-      { printf("background %f %f %f\n", $2, $3, $4); }
+      { add_background_color($2, $3, $4);}
     ;
 
 

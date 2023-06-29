@@ -15,7 +15,7 @@ class Ray
 public:
 	Ray(void) : direction(), origin(), depth (0) {};
 	Ray(Vector &dir, Vector &orig, int d) : direction(dir), origin(orig), depth (d) {};
-	Color shade(std::vector<Objekt> &, std::vector<Light> &);
+	Color shade(std::vector<Objekt> &, std::vector<Light> &, Color bg);
 
 	Vector getDirection() { return direction; };
 	Vector getOrigin() { return origin; };

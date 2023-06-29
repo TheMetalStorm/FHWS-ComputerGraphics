@@ -19,7 +19,7 @@ using namespace std;
 /* Rueckgabeparameter: Farbe, die auf diesem Strahl zu sehen ist              */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shade(vector<Objekt> &objects, vector<Light> &lights)
+Color Ray::shade(vector<Objekt> &objects, vector<Light> &lights, Color bg)
 {
 	Objekt *closest = NULL;
 	Color cur_color; 
@@ -40,7 +40,7 @@ Color Ray::shade(vector<Objekt> &objects, vector<Light> &lights)
 
 	if (closest == NULL) {
 		if (depth == 0)
-			cur_color = Color(0.3,0.4,0.5); //background_color;
+			cur_color = bg; //background_color;
 		else
 			cur_color = black;
 	} else {
@@ -67,7 +67,7 @@ Color Ray::shade(vector<Objekt> &objects, vector<Light> &lights)
 		}
 
 		if (depth < 5) {
-			Color mirror_color = reflected_ray.shade(objects, lights);
+			Color mirror_color = reflected_ray.shade(objects, lights, bg);
 			mirror_color = mirror_color.scmpy(closest->getProperty().getMirror());
 			cur_color = mirror_color.addcolor(cur_color);
 		}

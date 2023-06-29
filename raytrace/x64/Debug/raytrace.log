@@ -1,42 +1,11 @@
 ﻿  Flex & Bison
-  ..\rayyacc.y: Warnung: 10 Nicht-Terminale, die in Grammatik nutzlos sind
-  ..\rayyacc.y: Warnung: 15 Regeln, die in Grammatik nutzlos sind
-  ..\\rayyacc.y:84.1-23: Warnung: Nicht-Terminal nutzlos in Grammatik: some_viewing_parameters
-  ..\\rayyacc.y:86.7-88.7: Warnung: Nicht-Terminal nutzlos in Grammatik: $@1
-  ..\\rayyacc.y:89.5-22: Warnung: Nicht-Terminal nutzlos in Grammatik: viewing_parameters
-  ..\\rayyacc.y:108.26-42: Warnung: Nicht-Terminal nutzlos in Grammatik: viewing_parameter
-  ..\\rayyacc.y:124.7-12: Warnung: Nicht-Terminal nutzlos in Grammatik: lookat
-  ..\\rayyacc.y:127.7-8: Warnung: Nicht-Terminal nutzlos in Grammatik: up
-  ..\\rayyacc.y:125.7-10: Warnung: Nicht-Terminal nutzlos in Grammatik: fovy
-  ..\\rayyacc.y:126.7-12: Warnung: Nicht-Terminal nutzlos in Grammatik: aspect
-  ..\\rayyacc.y:172.1-15: Warnung: Nicht-Terminal nutzlos in Grammatik: global_lighting
-  ..\\rayyacc.y:66.35-42: Warnung: Nicht-Terminal nutzlos in Grammatik: angleVal
-  ..\\rayyacc.y:86.7-88.7: Warnung: Regeln nutzlos in Grammatik: $@1: /* leer */
-  ..\\rayyacc.y:86.7-101.7: Warnung: Regeln nutzlos in Grammatik: some_viewing_parameters: $@1 viewing_parameters
-  ..\\rayyacc.y:108.7-42: Warnung: Regeln nutzlos in Grammatik: viewing_parameters: viewing_parameters viewing_parameter
-  ..\\rayyacc.y:109.6: Warnung: Regeln nutzlos in Grammatik: viewing_parameters: /* leer */
-  ..\\rayyacc.y:123.7-14: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: eyepoint
-  ..\\rayyacc.y:124.7-12: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: lookat
-  ..\\rayyacc.y:125.7-10: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: fovy
-  ..\\rayyacc.y:126.7-12: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: aspect
-  ..\\rayyacc.y:127.7-8: Warnung: Regeln nutzlos in Grammatik: viewing_parameter: up
-  ..\\rayyacc.y:153.7-154.51: Warnung: Regeln nutzlos in Grammatik: lookat: LOOKAT realVal realVal realVal
-  ..\\rayyacc.y:158.7-159.46: Warnung: Regeln nutzlos in Grammatik: up: UP realVal realVal realVal
-  ..\\rayyacc.y:163.7-164.34: Warnung: Regeln nutzlos in Grammatik: fovy: FOVY realVal
-  ..\\rayyacc.y:168.7-169.37: Warnung: Regeln nutzlos in Grammatik: aspect: ASPECT realVal
-  ..\\rayyacc.y:173.7-174.52: Warnung: Regeln nutzlos in Grammatik: global_lighting: AMBIENCE colorVal colorVal colorVal
-  ..\\rayyacc.y:382.12-390.5: Warnung: Regeln nutzlos in Grammatik: angleVal: realVal
-  stdafx.cpp
-  Color.cpp
-  Image.cpp
-  Light.cpp
-  Objekt.cpp
-  Property.cpp
+  ..\rayyacc.y: Warnung: 2 Nicht-Terminale, die in Grammatik nutzlos sind
+  ..\rayyacc.y: Warnung: 2 Regeln, die in Grammatik nutzlos sind
+  ..\\rayyacc.y:173.1-15: Warnung: Nicht-Terminal nutzlos in Grammatik: global_lighting
+  ..\\rayyacc.y:67.35-42: Warnung: Nicht-Terminal nutzlos in Grammatik: angleVal
+  ..\\rayyacc.y:174.7-175.52: Warnung: Regeln nutzlos in Grammatik: global_lighting: AMBIENCE colorVal colorVal colorVal
+  ..\\rayyacc.y:383.12-391.5: Warnung: Regeln nutzlos in Grammatik: angleVal: realVal
   Ray.cpp
-  raytrace.cpp
-  Surface.cpp
-  Vector.cpp
-  Code wird generiert...
   rayyacc.tab.c
 ..\lex.yy.c(1076,1): warning C4267: "=": Konvertierung von "size_t" nach "int", Datenverlust möglich
 ..\lex.yy.c(1243,28): warning C4244: "Initialisierung": Konvertierung von "__int64" in "int", möglicher Datenverlust

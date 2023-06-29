@@ -23,6 +23,7 @@ int Yresolution;
 double eyeX;
 double eyeY;
 double eyeZ;
+Color bg;
 
 extern "C" {
 	extern FILE *yyin;
@@ -45,7 +46,17 @@ extern "C" {
 		Yresolution = y;
 		fprintf(stderr, "  adding resolution X: %d, Y: %d\n", x,y);
 	}
-	extern void add_eyepoint(double x, double y, double z) {
+
+	void add_background_color(double r, double g, double b) {
+		bg.r = r;
+		bg.g = g;
+		bg.b = b;
+		fprintf(stderr, "  adding BG Color R: %f, G: %f, B: %f\n", r, g, b);
+
+	};
+
+
+	void add_eyepoint(double x, double y, double z) {
 		eyeX = x;
 		eyeY = y;
 		eyeZ = z;
@@ -112,7 +123,7 @@ int main(int argc, _TCHAR* argv[])
 		for (int sx=0; sx < Xresolution; sx++) {
 			ray.setDirection(Vector(x, y, 0.0).vsub(ray.getOrigin()).normalize());
 			x += dx;
-			Color color = ray.shade(objekte, lights);
+			Color color = ray.shade(objekte, lights, bg);
 
 			bild.set(sx, scanline,
 				color.r > 1.0 ? 255 : int(255 * color.r),
