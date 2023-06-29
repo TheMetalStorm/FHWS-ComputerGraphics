@@ -191,6 +191,8 @@ extern void add_light(char *n, double dirx, double diry, double dirz, double col
 extern void add_resolution(int x, int y);
 extern void add_eyepoint (double x, double y, double z);
 extern void add_background_color (double r, double g, double b);
+extern void add_up (double x, double y, double z);
+extern void add_look_at (double x, double y, double z);
 
 
 
@@ -505,14 +507,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    82,    82,    87,    87,   109,   110,   114,   115,   119,
-     120,   124,   125,   126,   127,   128,   132,   140,   146,   154,
-     159,   164,   169,   180,   184,   188,   192,   180,   199,   203,
-     204,   208,   209,   213,   223,   222,   230,   234,   235,   239,
-     244,   248,   249,   254,   253,   260,   261,   265,   270,   274,
-     275,   279,   287,   296,   305,   312,   319,   323,   324,   328,
-     337,   341,   342,   345,   352,   360,   370,   372,   395,   397,
-     401
+       0,    84,    84,    89,    89,   111,   112,   116,   117,   121,
+     122,   126,   127,   128,   129,   130,   134,   142,   148,   156,
+     163,   172,   177,   188,   192,   196,   200,   188,   207,   211,
+     212,   216,   217,   221,   231,   230,   238,   242,   243,   247,
+     252,   256,   257,   262,   261,   268,   269,   273,   278,   282,
+     283,   287,   295,   304,   313,   320,   327,   331,   332,   336,
+     345,   349,   350,   353,   360,   368,   378,   380,   403,   405,
+     409
 };
 #endif
 
@@ -1551,12 +1553,18 @@ yyreduce:
 
   case 19:
 
-    { printf("lookat %f %f %f\n", (yyvsp[(2) - (4)].floatval), (yyvsp[(3) - (4)].floatval), (yyvsp[(4) - (4)].floatval) ); ;}
+    { lookat_seen = 1;
+        add_look_at((yyvsp[(2) - (4)].floatval), (yyvsp[(3) - (4)].floatval), (yyvsp[(4) - (4)].floatval));
+      ;}
     break;
 
   case 20:
 
-    { printf("up %f %f %f\n", (yyvsp[(2) - (4)].floatval), (yyvsp[(3) - (4)].floatval), (yyvsp[(4) - (4)].floatval)); ;}
+    { 
+        up_seen = 1;
+        add_up((yyvsp[(2) - (4)].floatval), (yyvsp[(3) - (4)].floatval), (yyvsp[(4) - (4)].floatval)); 
+
+      ;}
     break;
 
   case 21:

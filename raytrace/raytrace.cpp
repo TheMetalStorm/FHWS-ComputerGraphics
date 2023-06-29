@@ -6,6 +6,7 @@
 #include "Color.h"
 #include "Image.h"
 #include "vector"
+#include "Camera.h"
 
 const double SCREENWIDTH = 1000;
 const double SCREENHEIGHT = 1000;
@@ -24,7 +25,8 @@ double eyeX;
 double eyeY;
 double eyeZ;
 Color bg;
-
+Vector up;
+Vector lookAt;
 extern "C" {
 	extern FILE *yyin;
 	int yyparse();
@@ -52,7 +54,6 @@ extern "C" {
 		bg.g = g;
 		bg.b = b;
 		fprintf(stderr, "  adding BG Color R: %f, G: %f, B: %f\n", r, g, b);
-
 	};
 
 
@@ -61,6 +62,21 @@ extern "C" {
 		eyeY = y;
 		eyeZ = z;
 		fprintf(stderr, "  adding eyepoint X: %f, Y: %f, Z: %f\n", x, y, z);
+	};
+
+	void add_look_at(double x, double y, double z) {
+		lookAt.x = x;
+		lookAt.y = y;
+		lookAt.z = z;
+		fprintf(stderr, "  adding lookatpoint X: %f, Y: %f, Z: %f\n", x, y, z);
+	};
+
+
+	void add_up(double x, double y, double z) {
+		up.x = x;
+		up.y = y;
+		up.z = z;
+		fprintf(stderr, "  adding Up Vector X: %f, Y: %f, Z: %f\n", x, y, z);
 
 	};
 
@@ -108,9 +124,11 @@ int main(int argc, _TCHAR* argv[])
 	double dx = SCREENWIDTH / (double)Xresolution;
 	double dy = SCREENHEIGHT / (double)Yresolution;
 	double y = -0.5 * SCREENHEIGHT;
-	//Vector eye(0, 0, SCREENHEIGHT * 8.0);
 	Vector eye(eyeX, eyeY, eyeZ);
-	Ray	ray(Vector(1,0,0), eye ,0);
+
+	Camera cam(eye, lookAt, up);
+
+	Ray	ray(Vector(1,0,0), cam.eye ,0);
 
 	Image bild(Xresolution, Yresolution);
 
@@ -121,7 +139,10 @@ int main(int argc, _TCHAR* argv[])
 		double x = -0.5 * SCREENWIDTH;
 
 		for (int sx=0; sx < Xresolution; sx++) {
-			ray.setDirection(Vector(x, y, 0.0).vsub(ray.getOrigin()).normalize());
+			int distanceToViewingPlane = 1;
+			Vector pixelPos = cam.getRight().svmpy(x).vsub(cam.getActualUp().svmpy(y)).vadd(cam.getForward().svmpy(distanceToViewingPlane));
+			ray.setDirection(pixelPos.vsub(ray.getOrigin()).normalize());
+			//ray.setDirection(Vector(x, y, 0.0).vsub(ray.getOrigin()).normalize()); //look at current pixel
 			x += dx;
 			Color color = ray.shade(objekte, lights, bg);
 

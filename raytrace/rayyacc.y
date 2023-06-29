@@ -58,6 +58,8 @@ extern void add_light(char *n, double dirx, double diry, double dirz, double col
 extern void add_resolution(int x, int y);
 extern void add_eyepoint (double x, double y, double z);
 extern void add_background_color (double r, double g, double b);
+extern void add_up (double x, double y, double z);
+extern void add_look_at (double x, double y, double z);
 
 %}
 
@@ -152,12 +154,18 @@ eyepoint
 
 lookat
     : LOOKAT realVal realVal realVal
-      { printf("lookat %f %f %f\n", $2, $3, $4 ); }
+      { lookat_seen = 1;
+        add_look_at($2, $3, $4);
+      }
     ;
 
 up
     : UP realVal realVal realVal
-      { printf("up %f %f %f\n", $2, $3, $4); }
+      { 
+        up_seen = 1;
+        add_up($2, $3, $4); 
+
+      }
     ;
 
 fovy
