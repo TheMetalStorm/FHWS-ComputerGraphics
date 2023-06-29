@@ -20,6 +20,9 @@ vector<Objekt> objekte;
 vector<Light> lights;
 int Xresolution;
 int Yresolution;
+double eyeX;
+double eyeY;
+double eyeZ;
 
 extern "C" {
 	extern FILE *yyin;
@@ -41,8 +44,15 @@ extern "C" {
 		Xresolution = x;
 		Yresolution = y;
 		fprintf(stderr, "  adding resolution X: %d, Y: %d\n", x,y);
-
 	}
+	extern void add_eyepoint(double x, double y, double z) {
+		eyeX = x;
+		eyeY = y;
+		eyeZ = z;
+		fprintf(stderr, "  adding eyepoint X: %f, Y: %f, Z: %f\n", x, y, z);
+
+	};
+
 	void add_objekt(char *ns, char *np) {
 		Surface *s = NULL;
 		Property *p = NULL;
@@ -87,7 +97,8 @@ int main(int argc, _TCHAR* argv[])
 	double dx = SCREENWIDTH / (double)Xresolution;
 	double dy = SCREENHEIGHT / (double)Yresolution;
 	double y = -0.5 * SCREENHEIGHT;
-	Vector eye(0, 0, SCREENHEIGHT * 8.0);
+	//Vector eye(0, 0, SCREENHEIGHT * 8.0);
+	Vector eye(eyeX, eyeY, eyeZ);
 	Ray	ray(Vector(1,0,0), eye ,0);
 
 	Image bild(Xresolution, Yresolution);

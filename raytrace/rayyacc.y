@@ -56,6 +56,7 @@ extern void add_property(char *n, double ar, double ag, double ab, double r, dou
 extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
 extern void add_resolution(int x, int y);
+extern void add_eyepoint (double x, double y, double z);
 
 %}
 
@@ -77,7 +78,7 @@ extern void add_resolution(int x, int y);
 %%
 
 scene 
-    : picture_parameters /*some_viewing_parameters global_lighting*/ geometry
+    : picture_parameters some_viewing_parameters /*global_lighting*/ geometry
     ;
 
 some_viewing_parameters
@@ -128,7 +129,9 @@ viewing_parameter
 
 resolution
     : RESOLUTION index index
-      {resolution_seen = 1; add_resolution($2, $3); 
+      {
+        resolution_seen = 1; 
+        add_resolution($2, $3); 
       }
     ;
 
@@ -140,7 +143,10 @@ background
 
 eyepoint
     : EYEPOINT realVal realVal realVal
-      { printf("eyepoint %f %f %f\n", $2, $3, $4 ); }
+      {
+        eyepoint_seen = 1; 
+        add_eyepoint($2, $3, $4); 
+      }
     ;
 
 lookat
