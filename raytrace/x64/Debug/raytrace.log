@@ -1,12 +1,12 @@
 ﻿  Flex & Bison
   ..\rayyacc.y: Warnung: 2 Nicht-Terminale, die in Grammatik nutzlos sind
   ..\rayyacc.y: Warnung: 2 Regeln, die in Grammatik nutzlos sind
-  ..\\rayyacc.y:181.1-15: Warnung: Nicht-Terminal nutzlos in Grammatik: global_lighting
-  ..\\rayyacc.y:69.35-42: Warnung: Nicht-Terminal nutzlos in Grammatik: angleVal
-  ..\\rayyacc.y:182.7-183.52: Warnung: Regeln nutzlos in Grammatik: global_lighting: AMBIENCE colorVal colorVal colorVal
-  ..\\rayyacc.y:391.12-399.5: Warnung: Regeln nutzlos in Grammatik: angleVal: realVal
+  ..\\rayyacc.y:188.1-15: Warnung: Nicht-Terminal nutzlos in Grammatik: global_lighting
+  ..\\rayyacc.y:71.35-42: Warnung: Nicht-Terminal nutzlos in Grammatik: angleVal
+  ..\\rayyacc.y:189.7-190.52: Warnung: Regeln nutzlos in Grammatik: global_lighting: AMBIENCE colorVal colorVal colorVal
+  ..\\rayyacc.y:398.12-406.5: Warnung: Regeln nutzlos in Grammatik: angleVal: realVal
   raytrace.cpp
   rayyacc.tab.c
-..\lex.yy.c(1076,1): warning C4267: "=": Konvertierung von "size_t" nach "int", Datenverlust möglich
+..\lex.yy.c(1076,3): warning C4267: "=": Konvertierung von "size_t" nach "int", Datenverlust möglich
 ..\lex.yy.c(1243,28): warning C4244: "Initialisierung": Konvertierung von "__int64" in "int", möglicher Datenverlust
   raytrace.vcxproj -> C:\Users\arapo\CLionProjects\FHWS-ComputerGraphics\raytrace\x64\Debug\raytrace.exe

@@ -1,6 +1,7 @@
 // raytrace.cpp : Defines the entry point for the console application.
 //
 
+
 #include "stdafx.h" 
 #include "Ray.h"
 #include "Color.h"
@@ -10,6 +11,7 @@
 
 const double SCREENWIDTH = 1000;
 const double SCREENHEIGHT = 1000;
+double PI = 3.14159265358979323846264338327950288;
 
 
 
@@ -24,9 +26,13 @@ int Yresolution;
 double eyeX;
 double eyeY;
 double eyeZ;
-Color bg;
+double fov;
+double aspect;
 Vector up;
 Vector lookAt;
+Color bg;
+
+
 extern "C" {
 	extern FILE *yyin;
 	int yyparse();
@@ -71,6 +77,15 @@ extern "C" {
 		fprintf(stderr, "  adding lookatpoint X: %f, Y: %f, Z: %f\n", x, y, z);
 	};
 
+	void add_aspect(double a) {
+		aspect = a;
+		fprintf(stderr, "  adding aspect %f\n", a);
+	};
+
+	void add_fovy(double fovy) {
+		fov = fovy;
+		fprintf(stderr, "  adding fov %f\n", fovy);
+	};
 
 	void add_up(double x, double y, double z) {
 		up.x = x;
@@ -120,14 +135,14 @@ int main(int argc, _TCHAR* argv[])
 	}
 	yyparse();
 	fclose (yyin);
+	
 
-	double dx = SCREENWIDTH / (double)Xresolution;
+	double dx = SCREENWIDTH / (double)Xresolution * aspect;
 	double dy = SCREENHEIGHT / (double)Yresolution;
 	double y = -0.5 * SCREENHEIGHT;
 	Vector eye(eyeX, eyeY, eyeZ);
 
 	Camera cam(eye, lookAt, up);
-
 	Ray	ray(Vector(1,0,0), cam.eye ,0);
 
 	Image bild(Xresolution, Yresolution);
@@ -136,11 +151,18 @@ int main(int argc, _TCHAR* argv[])
 
 		printf("%4d\r", Yresolution-scanline);
 		y += dy;
-		double x = -0.5 * SCREENWIDTH;
+		double x = -0.5 * SCREENWIDTH * aspect;
 
 		for (int sx=0; sx < Xresolution; sx++) {
+
+			//Vector v;
+			//v.x = 2 * sx * tan(fov * PI / 180 / 2 )/Xresolution;
+			//v.y = 2 * scanline * tan(fov * PI / 180  / 2)/ Yresolution;
+			//v.z = 1;
+			//v = v.normalize();
+
 			int distanceToViewingPlane = 1;
-			Vector pixelPos = cam.getRight().svmpy(x).vsub(cam.getActualUp().svmpy(y)).vadd(cam.getForward().svmpy(distanceToViewingPlane));
+			Vector pixelPos = cam.getRight().svmpy(x).vsub(cam.getActualUp().svmpy(y)).vadd(cam.getForward().svmpy(1));
 			ray.setDirection(pixelPos.vsub(ray.getOrigin()).normalize());
 			//ray.setDirection(Vector(x, y, 0.0).vsub(ray.getOrigin()).normalize()); //look at current pixel
 			x += dx;

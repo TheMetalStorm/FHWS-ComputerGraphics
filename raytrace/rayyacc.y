@@ -60,6 +60,8 @@ extern void add_eyepoint (double x, double y, double z);
 extern void add_background_color (double r, double g, double b);
 extern void add_up (double x, double y, double z);
 extern void add_look_at (double x, double y, double z);
+extern void add_fovy (double fovy);
+extern void add_aspect (double a);
 
 %}
 
@@ -170,12 +172,17 @@ up
 
 fovy
     : FOVY realVal
-      { printf("fovy %f\n", $2); }
+      {
+        add_fovy($2);
+      }
     ;
 
 aspect
     : ASPECT realVal
-      { printf("aspect %f\n", $2 ); }
+      { 
+        aspect_seen=1;
+        add_aspect($2);
+      }
     ;
 
 global_lighting

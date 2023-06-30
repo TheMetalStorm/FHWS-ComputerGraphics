@@ -193,6 +193,8 @@ extern void add_eyepoint (double x, double y, double z);
 extern void add_background_color (double r, double g, double b);
 extern void add_up (double x, double y, double z);
 extern void add_look_at (double x, double y, double z);
+extern void add_fovy (double fovy);
+extern void add_aspect (double a);
 
 
 
@@ -507,14 +509,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    84,    84,    89,    89,   111,   112,   116,   117,   121,
-     122,   126,   127,   128,   129,   130,   134,   142,   148,   156,
-     163,   172,   177,   188,   192,   196,   200,   188,   207,   211,
-     212,   216,   217,   221,   231,   230,   238,   242,   243,   247,
-     252,   256,   257,   262,   261,   268,   269,   273,   278,   282,
-     283,   287,   295,   304,   313,   320,   327,   331,   332,   336,
-     345,   349,   350,   353,   360,   368,   378,   380,   403,   405,
-     409
+       0,    86,    86,    91,    91,   113,   114,   118,   119,   123,
+     124,   128,   129,   130,   131,   132,   136,   144,   150,   158,
+     165,   174,   181,   195,   199,   203,   207,   195,   214,   218,
+     219,   223,   224,   228,   238,   237,   245,   249,   250,   254,
+     259,   263,   264,   269,   268,   275,   276,   280,   285,   289,
+     290,   294,   302,   311,   320,   327,   334,   338,   339,   343,
+     352,   356,   357,   360,   367,   375,   385,   387,   410,   412,
+     416
 };
 #endif
 
@@ -1569,12 +1571,17 @@ yyreduce:
 
   case 21:
 
-    { printf("fovy %f\n", (yyvsp[(2) - (2)].floatval)); ;}
+    {
+        add_fovy((yyvsp[(2) - (2)].floatval));
+      ;}
     break;
 
   case 22:
 
-    { printf("aspect %f\n", (yyvsp[(2) - (2)].floatval) ); ;}
+    { 
+        aspect_seen=1;
+        add_aspect((yyvsp[(2) - (2)].floatval));
+      ;}
     break;
 
   case 23:
