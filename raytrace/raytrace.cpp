@@ -137,9 +137,9 @@ int main(int argc, _TCHAR* argv[])
 	fclose (yyin);
 	
 
-	double dx = SCREENWIDTH / (double)Xresolution * aspect;
-	double dy = SCREENHEIGHT / (double)Yresolution;
-	double y = -0.5 * SCREENHEIGHT;
+	double dx = SCREENWIDTH / (double)Xresolution * aspect * tan(fov * PI / 180 / 2);
+	double dy = SCREENHEIGHT / (double)Yresolution * tan(fov * PI / 180 / 2);
+	double y = -0.5 * SCREENHEIGHT * tan(fov * PI / 180 / 2);
 	Vector eye(eyeX, eyeY, eyeZ);
 
 	Camera cam(eye, lookAt, up);
@@ -151,7 +151,7 @@ int main(int argc, _TCHAR* argv[])
 
 		printf("%4d\r", Yresolution-scanline);
 		y += dy;
-		double x = -0.5 * SCREENWIDTH * aspect;
+		double x = -0.5 * SCREENWIDTH * aspect * tan(fov * PI / 180 / 2);
 
 		for (int sx=0; sx < Xresolution; sx++) {
 
